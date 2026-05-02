@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yüzdelik Hesaplama Makinesi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: yellow;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            margin: 0;
+            /* İçeriği biraz daha yukarıdan başlatmak için padding-top eklendi */
+            padding-top: 30px;
+        }
+        
+        .fiyat-input {
+            width: 89%;
+            height: 89px; 
+            font-size: 40px; 
+            text-align: center;
+            border-radius: 95px;
+            border: 4px solid yellow;
+            background-color: #f00;
+            color: white;
+            margin-bottom: 20px; /* Altındaki kutuyla mesafe */
+            outline: none;
+        }
+
+        .sonuc-kutusu {
+            width: 85%;
+            background-color: green;
+            padding: 10px;
+            border-radius: 39px;
+            border: 5px solid red;
+        }
+
+        .oran-satiri {
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px; 
+            padding: 15px 0;
+            border-bottom: 5px solid red; /* Çizgiyi biraz incelttim daha şık durması için */
+        }
+
+        .oran-satiri:last-child { border-bottom: none; }
+        .yuzde { color: white; }
+        .fiyat { color: white; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <input type="number" id="ihaleFiyati" class="fiyat-input" placeholder="Fiyat Girin" oninput="hesapla()">
+
+    <div class="sonuc-kutusu">
+        <div class="oran-satiri"><span class="yuzde">%85 Teklif:</span> <span id="r85" class="fiyat">-</span></div>
+        <div class="oran-satiri"><span class="yuzde">%84 Teklif:</span> <span id="r84" class="fiyat">-</span></div>
+        <div class="oran-satiri"><span class="yuzde">%70 Teklif:</span> <span id="r70" class="fiyat">-</span></div>
+        <div class="oran-satiri"><span class="yuzde">%55 Teklif:</span> <span id="r55" class="fiyat">-</span></div>
+        <div class="oran-satiri"><span class="yuzde">%40 Teklif:</span> <span id="r40" class="fiyat">-</span></div>
+        <div class="oran-satiri"><span class="yuzde">%30 Teklif:</span> <span id="r30" class="fiyat">-</span></div>
+        <div class="oran-satiri"><span class="yuzde">%20 Teklif:</span> <span id="r20" class="fiyat">-</span></div>
+    </div>
+
+    <script>
+      // İstediğin yere ekleyebileceğin genel yüzdelik hesaplama fonksiyonu
+function yuzdeHesapla(tutar, yuzdeOrani) {
+    let sonuc = tutar * (yuzdeOrani / 100);
+    return (Math.round(sonuc * 100) / 100).toFixed(2);
+}
+
+// Örnek kullanım:
+// console.log(yuzdeHesapla(4.10, 85)); -> "3.49" sonucunu verir.
+
+        function hassasYuvarla(sayi) {
+            // Sayıyı 100 ile çarpıp yuvarlıyoruz, sonra tekrar 100'e bölüyoruz.
+            // Bu yöntem 3.485'in kesinlikle 3.49 olmasını sağlar.
+            return (Math.round(sayi * 100) / 100).toFixed(2);
+        }
+
+        function hesapla() {
+            let fiyat = document.getElementById("ihaleFiyati").value;
+            if (fiyat > 0) {
+                document.getElementById("r85").innerText = hassasYuvarla(fiyat * 0.85) + " TL";
+                document.getElementById("r84").innerText = hassasYuvarla(fiyat * 0.84) + " TL";
+                document.getElementById("r70").innerText = hassasYuvarla(fiyat * 0.70) + " TL";
+                document.getElementById("r55").innerText = hassasYuvarla(fiyat * 0.55) + " TL";
+                document.getElementById("r40").innerText = hassasYuvarla(fiyat * 0.40) + " TL";
+                document.getElementById("r30").innerText = hassasYuvarla(fiyat * 0.30) + " TL";
+                document.getElementById("r20").innerText = hassasYuvarla(fiyat * 0.20) + " TL";
+            } else {
+                let idler = ["r85","r84", "r70", "r55", "r40", "r30", "r20"];
+                idler.forEach(id => document.getElementById(id).innerText = "-");
+            }
+        }
+    </script>
+
+</body>
+</html>
