@@ -3,612 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ApeX İhale Yardım</title>
+    <title>ApeX Pro v4.1 - Birhat Yüzkan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --bg: #050607;
-            --panel: #101316;
-            --panel-soft: #171b1f;
-            --line: rgba(255, 255, 255, 0.1);
-            --text: #f5f7f8;
-            --muted: #9ca5aa;
-            --accent: #78d8bb;
-            --accent-strong: #50c49e;
-            --danger: #ff5f5f;
-            --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+            --bg: #010409;
+            --panel: #0d1117;
+            --accent: #00d2ff; 
+            --accent-glow: rgba(0, 210, 255, 0.2);
+            --line: rgba(255, 255, 255, 0.08);
+            --text: #ffffff;
+            --muted: #8b949e;
         }
 
-        * {
-            box-sizing: border-box;
+        /* Takım Temaları - Sarılar Eşitlendi (#FFD700) */
+        [data-theme="fb"] { --accent: #FFD700; --accent-glow: rgba(255, 215, 0, 0.4); --bg: #001d3d; }
+        [data-theme="gs"] { --accent: #FFD700; --accent-glow: rgba(255, 215, 0, 0.4); --bg: #2d0000; }
+        [data-theme="bjk"] { --accent: #ffffff; --accent-glow: rgba(255, 255, 255, 0.2); --bg: #000000; }
+        [data-theme="ts"] { --accent: #6ecff6; --accent-glow: rgba(110, 207, 246, 0.3); --bg: #4a0014; }
+        
+        [data-theme="red"] { --accent: #ff3131; --accent-glow: rgba(255, 49, 49, 0.2); }
+        [data-theme="green"] { --accent: #008f39; --accent-glow: rgba(0, 143, 57, 0.2); }
+        [data-theme="yellow"] { --accent: #fff01f; --accent-glow: rgba(255, 240, 31, 0.2); }
+        [data-theme="blue"] { --accent: #00d2ff; --accent-glow: rgba(0, 210, 255, 0.2); }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: all 0.25s ease; }
+        body { margin: 0; padding: 15px 0 110px; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+        #loader {
+            position: fixed; inset: 0; z-index: 9999; background: #000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: opacity 0.3s;
+        }
+        body.loaded #loader { opacity: 0; visibility: hidden; }
+        .loader-logo { color: var(--accent); font-size: 26px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 15px var(--accent-glow); }
+
+        .container { width: calc(100% - 30px); max-width: 420px; margin: 0 auto; }
+        header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        
+        .pinnacle-logo { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
+        .pinnacle-svg { width: 100%; height: 100%; fill: none; stroke: var(--accent); stroke-width: 2.8; filter: drop-shadow(0 0 5px var(--accent-glow)); }
+        .apex-text { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1; }
+
+        .top-settings-btn {
+            width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--line);
+            display: grid; place-items: center; color: var(--muted); cursor: pointer;
+            background: rgba(255,255,255,0.02); font-size: 18px;
+        }
+        .top-settings-btn.active { color: var(--accent); border-color: var(--accent); }
+
+        .card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 12px; }
+        .label { color: var(--muted); font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: block; letter-spacing: 1px; }
+
+        input {
+            width: 100%; background: rgba(0,0,0,0.3); border: 2px solid var(--line);
+            border-radius: 15px; color: var(--accent); font-size: 28px;
+            text-align: right; padding: 12px; outline: none; font-weight: bold;
         }
 
-        html {
-            min-height: 100%;
-            background: var(--bg);
+        .rate-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .rate-row.hidden { display: none; }
+        .rate-val { color: var(--accent); font-size: 19px; font-weight: 800; }
+        
+        .copy-btn { background: transparent; border: 1px solid var(--line); color: var(--accent); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; }
+
+        .op-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .op-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--line); color: #fff; padding: 15px 0; border-radius: 15px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .op-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+        .op-btn.hidden { display: none; }
+
+        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        .color-dot { height: 40px; border-radius: 10px; cursor: pointer; border: 2px solid rgba(255,255,255,0.1); overflow: hidden; position: relative; }
+        .split { position: absolute; inset: 0; display: flex; }
+        .split span { flex: 1; height: 100%; }
+
+        .setting-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); }
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #21262d; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        nav {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+            width: calc(100% - 30px); max-width: 400px;
+            background: rgba(13, 17, 23, 0.95); display: grid; grid-template-columns: repeat(2, 1fr); 
+            padding: 8px; border-radius: 25px; border: 1px solid var(--line);
         }
+        .nav-item { background: transparent; border: none; color: var(--muted); font-weight: 800; padding: 15px; cursor: pointer; border-radius: 18px; }
+        .nav-item.active { background: rgba(255,255,255,0.05); color: var(--accent); }
 
-        body {
-            min-height: 100vh;
-            margin: 0;
-            padding: 18px 0 96px;
-            overflow-x: hidden;
-            background:
-                radial-gradient(circle at 50% -10%, rgba(120, 216, 187, 0.16), transparent 34%),
-                linear-gradient(180deg, #0c0f11 0%, var(--bg) 48%, #020303 100%);
-            color: var(--text);
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        #apex-loader {
-            position: fixed;
-            inset: 0;
-            z-index: 10;
-            display: grid;
-            place-items: center;
-            background: #030404;
-            transition: opacity 0.35s ease, visibility 0.35s ease;
-        }
-
-        body.loaded #apex-loader {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-
-        .loader-logo {
-            text-align: center;
-            color: var(--accent);
-        }
-
-        .loader-logo h1 {
-            margin: 0;
-            font-size: 42px;
-            letter-spacing: 2px;
-        }
-
-        .loader-logo p {
-            margin: 8px 0 0;
-            color: var(--muted);
-            font-size: 17px;
-        }
-
-        .app {
-            width: calc(100vw - 28px);
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
-            margin-bottom: 18px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-        }
-
-        .brand-mark {
-            width: 44px;
-            height: 44px;
-            display: grid;
-            place-items: center;
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--accent);
-        }
-
-        .brand h1 {
-            margin: 0;
-            font-size: 19px;
-            line-height: 1.1;
-        }
-
-        .brand span {
-            display: block;
-            margin-top: 3px;
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        .status-pill {
-            padding: 8px 10px;
-            border: 1px solid rgba(120, 216, 187, 0.25);
-            border-radius: 999px;
-            color: var(--accent);
-            background: rgba(120, 216, 187, 0.08);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        .screen {
-            display: none;
-            animation: fadeIn 0.22s ease;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .hero-panel,
-        .result-panel,
-        .operation-panel {
-            border: 1px solid var(--line);
-            border-radius: 18px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035));
-            box-shadow: var(--shadow);
-        }
-
-        .hero-panel {
-            padding: 16px;
-            margin-bottom: 14px;
-        }
-
-        .section-label {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .main-input {
-            width: 100%;
-            min-height: 78px;
-            border: 1px solid rgba(120, 216, 187, 0.38);
-            border-radius: 16px;
-            outline: none;
-            background: rgba(0, 0, 0, 0.28);
-            color: var(--text);
-            font-size: 36px;
-            font-weight: 800;
-            text-align: center;
-        }
-
-        .main-input::placeholder {
-            color: rgba(255, 255, 255, 0.2);
-        }
-
-        .result-panel {
-            overflow: hidden;
-            margin-bottom: 14px;
-        }
-
-        .rate-row {
-            display: grid;
-            grid-template-columns: 70px minmax(0, 1fr) 34px;
-            column-gap: 8px;
-            align-items: center;
-            min-height: 58px;
-            padding: 0 14px;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .rate-row:last-child {
-            border-bottom: 0;
-        }
-
-        .rate-name {
-            color: var(--accent);
-            font-weight: 900;
-        }
-
-        .value {
-            justify-self: end;
-            font-size: 22px;
-            font-weight: 850;
-            letter-spacing: 0.02em;
-        }
-
-        .copy-btn,
-        .clear-btn,
-        .nav-btn,
-        .operation-card {
-            cursor: pointer;
-            font: inherit;
-        }
-
-        .copy-btn {
-            width: 34px;
-            height: 34px;
-            margin-left: 0;
-            border: 1px solid rgba(120, 216, 187, 0.42);
-            border-radius: 10px;
-            background: rgba(120, 216, 187, 0.08);
-            color: var(--accent);
-        }
-
-        .clear-btn {
-            width: 100%;
-            min-height: 52px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.055);
-            color: var(--text);
-            font-weight: 850;
-        }
-
-        .operation-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .operation-card {
-            min-height: 104px;
-            border: 1px solid var(--line);
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.045);
-            color: var(--text);
-            text-align: left;
-            padding: 14px;
-            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
-        }
-
-        .operation-card.active {
-            border-color: rgba(120, 216, 187, 0.75);
-            background: rgba(120, 216, 187, 0.12);
-        }
-
-        .operation-card:active {
-            transform: scale(0.98);
-        }
-
-        .operation-icon {
-            display: grid;
-            place-items: center;
-            width: 34px;
-            height: 34px;
-            margin-bottom: 12px;
-            border-radius: 10px;
-            color: var(--accent);
-            background: rgba(120, 216, 187, 0.09);
-            font-size: 24px;
-            font-weight: 900;
-        }
-
-        .operation-title {
-            display: block;
-            font-size: 16px;
-            font-weight: 850;
-        }
-
-        .operation-hint {
-            display: block;
-            margin-top: 4px;
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        .input-stack {
-            display: grid;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .operation-panel {
-            padding: 16px;
-            margin-bottom: 14px;
-        }
-
-        .operation-result {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            min-height: 66px;
-            padding: 0 14px;
-            border: 1px solid rgba(120, 216, 187, 0.35);
-            border-radius: 16px;
-            background: rgba(120, 216, 187, 0.08);
-        }
-
-        .operation-result small {
-            display: block;
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .operation-result .value {
-            font-size: 25px;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            left: 50%;
-            bottom: 14px;
-            z-index: 5;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            width: min(calc(100% - 24px), 400px);
-            padding: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 18px;
-            background: rgba(5, 6, 7, 0.86);
-            backdrop-filter: blur(14px);
-            transform: translateX(-50%);
-            box-shadow: 0 12px 38px rgba(0, 0, 0, 0.45);
-        }
-
-        .nav-btn {
-            min-height: 62px;
-            border: 0;
-            border-radius: 13px;
-            background: transparent;
-            color: var(--muted);
-            font-weight: 850;
-        }
-
-        .nav-btn.active {
-            color: var(--accent);
-            background: rgba(120, 216, 187, 0.1);
-        }
-
-        .nav-btn svg,
-        .brand-mark svg {
-            width: 25px;
-            height: 25px;
-            display: block;
-            margin: 0 auto 5px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .brand-mark svg {
-            margin: 0;
-        }
-
-        .nav-btn span {
-            display: block;
-            font-size: 12px;
-        }
-
-        @media (max-width: 360px) {
-            body {
-                padding-inline: 10px;
-            }
-
-            .main-input {
-                font-size: 31px;
-            }
-
-            .value {
-                font-size: 20px;
-            }
-        }
+        .btn-clear { width: 100%; padding: 15px; background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 11px; }
     </style>
 </head>
 <body>
-    <div id="apex-loader">
-        <div class="loader-logo">
-            <h1>ApeX</h1>
-            <p>İhale Yardım</p>
+
+<div id="loader">
+    <div class="pinnacle-logo" style="width: 80px; height: 80px;">
+        <svg class="pinnacle-svg" viewBox="0 0 100 100">
+            <path d="M50 15 L85 85 L50 70 L15 85 Z M50 15 L50 70" />
+        </svg>
+    </div>
+    <div class="loader-logo">ApeX-v4.1</div>
+</div>
+
+<div class="container">
+    <header>
+        <div style="display:flex; align-items:center; gap:14px;">
+            <div class="pinnacle-logo">
+                <svg class="pinnacle-svg" viewBox="0 0 100 100">
+                    <path d="M50 15 L85 85 L50 70 L15 85 Z M50 15 L50 70" />
+                </svg>
+            </div>
+            <div>
+                <div class="apex-text">ApeX Pro</div>
+                <small style="color:var(--accent); font-weight: bold; letter-spacing: 0.5px;">Birhat Yüzkan v4.1</small>
+            </div>
+        </div>
+        <div class="top-settings-btn" id="settings-btn" onclick="showSettings()">
+            <i class="fa-solid fa-sliders"></i>
+        </div>
+    </header>
+
+    <div id="tab-yuzde" class="tab-content">
+        <div class="card">
+            <span class="label">İhale Fiyatı</span>
+            <input type="number" id="fiyatInp" placeholder="0,000" oninput="hesapla()">
+        </div>
+        <div class="card" id="yuzdeListesi"></div>
+        <button class="btn-clear" onclick="resetYuzde()">SIFIRLA</button>
+    </div>
+
+    <div id="tab-islem" class="tab-content" style="display:none;">
+        <div class="op-grid">
+            <button class="op-btn active" id="btn-topla" onclick="setOp('TOPLAMA', this)">TOPLAMA</button>
+            <button class="op-btn" id="btn-cikar" onclick="setOp('ÇIKARMA', this)">ÇIKARMA</button>
+            <button class="op-btn" id="btn-carp" onclick="setOp('ÇARPMA', this)">ÇARPMA</button>
+            <button class="op-btn" id="btn-bol" onclick="setOp('BÖLME', this)">BÖLME</button>
+        </div>
+        <div class="card">
+            <span class="label">Değer 1</span>
+            <input type="number" id="s1" placeholder="0" oninput="doMath()">
+            <div class="divider" style="height: 1px; background: var(--line); margin: 15px 0;"></div>
+            <span class="label">Değer 2</span>
+            <input type="number" id="s2" placeholder="0" oninput="doMath()">
+        </div>
+        <div class="card">
+            <span class="label">Sonuç</span>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span id="mathResult" style="font-size:32px; font-weight:800; color:var(--accent);">0,000</span>
+                <button class="copy-btn" onclick="kopyala('mathResult')"><i class="fa-regular fa-copy"></i></button>
+            </div>
         </div>
     </div>
 
-    <main class="app">
-        <header class="topbar">
-            <div class="brand">
-                <div class="brand-mark" aria-hidden="true">
-                    <svg viewBox="0 0 24 24"><path d="M4 20 12 4l8 16-8-4-8 4Z"></path><path d="m12 4 0 12"></path></svg>
-                </div>
-                <div>
-                    <h1>ApeX İhale</h1>
-                    <span>Parapania teklif yardımcısı</span>
-                </div>
+    <div id="tab-ayarlar" class="tab-content" style="display:none;">
+        <div class="card">
+            <span class="label">Standart Renkler</span>
+            <div class="color-grid">
+                <div class="color-dot" style="background:#00d2ff;" onclick="setTheme('blue')"></div>
+                <div class="color-dot" style="background:#ff3131;" onclick="setTheme('red')"></div>
+                <div class="color-dot" style="background:#008f39;" onclick="setTheme('green')"></div>
+                <div class="color-dot" style="background:#fff01f;" onclick="setTheme('yellow')"></div>
             </div>
-            <div class="status-pill">Canlı</div>
-        </header>
-
-        <section id="yuzde-tab" class="screen active">
-            <div class="hero-panel">
-                <div class="section-label">
-                    <span>İhale fiyatı</span>
-                    <span>Yüzdelik</span>
-                </div>
-                <input type="number" id="ihaleFiyati" class="main-input" placeholder="0" inputmode="decimal" oninput="hesaplaYuzde()">
+            
+            <span class="label">Takım Renkleri</span>
+            <div class="color-grid">
+                <div class="color-dot" onclick="setTheme('fb')"><div class="split"><span style="background:#FFD700"></span><span style="background:#001d3d"></span></div></div>
+                <div class="color-dot" onclick="setTheme('gs')"><div class="split"><span style="background:#ff0000"></span><span style="background:#FFD700"></span></div></div>
+                <div class="color-dot" onclick="setTheme('bjk')"><div class="split"><span style="background:#000000"></span><span style="background:#ffffff"></span></div></div>
+                <div class="color-dot" onclick="setTheme('ts')"><div class="split"><span style="background:#800000"></span><span style="background:#6ecff6"></span></div></div>
             </div>
 
-            <div class="result-panel">
-                <div class="rate-row"><span class="rate-name">%85</span><span id="r85" class="value">0,00</span><button class="copy-btn" onclick="kopyala('r85')" aria-label="%85 kopyala">⧉</button></div>
-                <div class="rate-row"><span class="rate-name">%84</span><span id="r84" class="value">0,00</span><button class="copy-btn" onclick="kopyala('r84')" aria-label="%84 kopyala">⧉</button></div>
-                <div class="rate-row"><span class="rate-name">%70</span><span id="r70" class="value">0,00</span><button class="copy-btn" onclick="kopyala('r70')" aria-label="%70 kopyala">⧉</button></div>
-                <div class="rate-row"><span class="rate-name">%55</span><span id="r55" class="value">0,00</span><button class="copy-btn" onclick="kopyala('r55')" aria-label="%55 kopyala">⧉</button></div>
-                <div class="rate-row"><span class="rate-name">%40</span><span id="r40" class="value">0,00</span><button class="copy-btn" onclick="kopyala('r40')" aria-label="%40 kopyala">⧉</button></div>
-                <div class="rate-row"><span class="rate-name">%30</span><span id="r30" class="value">0,00</span><button class="copy-btn" onclick="kopyala('r30')" aria-label="%30 kopyala">⧉</button></div>
-                <div class="rate-row"><span class="rate-name">%20</span><span id="r20" class="value">0,00</span><button class="copy-btn" onclick="kopyala('r20')" aria-label="%20 kopyala">⧉</button></div>
-            </div>
+            <span class="label">İşlemleri Yönet</span>
+            <div class="setting-item"><span>Toplama</span><label class="switch"><input type="checkbox" checked id="sw-topla" onchange="toggleOp('topla', this.checked)"><span class="slider"></span></label></div>
+            <div class="setting-item"><span>Çıkarma</span><label class="switch"><input type="checkbox" checked id="sw-cikar" onchange="toggleOp('cikar', this.checked)"><span class="slider"></span></label></div>
+            <div class="setting-item"><span>Çarpma</span><label class="switch"><input type="checkbox" checked id="sw-carp" onchange="toggleOp('carp', this.checked)"><span class="slider"></span></label></div>
+            <div class="setting-item"><span>Bölme</span><label class="switch"><input type="checkbox" checked id="sw-bol" onchange="toggleOp('bol', this.checked)"><span class="slider"></span></label></div>
+        </div>
+        <div class="card">
+            <span class="label">Görünür Oranlar</span>
+            <div id="switchListesi"></div>
+        </div>
+        <button class="btn-clear" onclick="closeSettings()">KAYDET VE ÇIK</button>
+    </div>
+</div>
 
-            <button class="clear-btn" onclick="temizleYuzde()">Yüzde ekranını temizle</button>
-        </section>
+<nav id="bottom-nav">
+    <button class="nav-item active" id="nav-yuzde" onclick="showTab('tab-yuzde', this)">Yüzdelik</button>
+    <button class="nav-item" id="nav-islem" onclick="showTab('tab-islem', this)">4 İşlem</button>
+</nav>
 
-        <section id="islem-tab" class="screen">
-            <div class="operation-grid">
-                <button class="operation-card active" onclick="islemSec('+', this)">
-                    <span class="operation-icon">+</span>
-                    <span class="operation-title">Toplama</span>
-                    <span class="operation-hint">İki sayıyı birleştir</span>
-                </button>
-                <button class="operation-card" onclick="islemSec('-', this)">
-                    <span class="operation-icon">−</span>
-                    <span class="operation-title">Çıkarma</span>
-                    <span class="operation-hint">Farkı hesapla</span>
-                </button>
-                <button class="operation-card" onclick="islemSec('*', this)">
-                    <span class="operation-icon">×</span>
-                    <span class="operation-title">Çarpma</span>
-                    <span class="operation-hint">Katlı sonucu bul</span>
-                </button>
-                <button class="operation-card" onclick="islemSec('/', this)">
-                    <span class="operation-icon">÷</span>
-                    <span class="operation-title">Bölme</span>
-                    <span class="operation-hint">Oranı hesapla</span>
-                </button>
-            </div>
+<textarea id="copyHelper" style="position:absolute; left:-999px;"></textarea>
 
-            <div class="operation-panel">
-                <div class="section-label">
-                    <span id="islemBaslik">Toplama işlemi</span>
-                    <span>Otomatik</span>
-                </div>
-                <div class="input-stack">
-                    <input type="number" id="sayi1" class="main-input" placeholder="1. sayı" inputmode="decimal" oninput="hesaplaIslem()">
-                    <input type="number" id="sayi2" class="main-input" placeholder="2. sayı" inputmode="decimal" oninput="hesaplaIslem()">
-                </div>
-                <div class="operation-result">
-                    <div>
-                        <small>Sonuç</small>
-                        <span id="islemSonuc" class="value">0,00</span>
-                    </div>
-                    <button class="copy-btn" onclick="kopyala('islemSonuc')" aria-label="Sonucu kopyala">⧉</button>
-                </div>
-            </div>
+<script>
+    const oranlar = [85, 84, 70, 69, 55, 54, 40, 39, 30, 20];
+    let currentOp = 'TOPLAMA';
 
-            <button class="clear-btn" onclick="temizleIslem()">İşlem ekranını temizle</button>
-        </section>
-    </main>
+    window.onload = () => {
+        const savedTheme = localStorage.getItem('apexTheme') || 'blue';
+        setTheme(savedTheme);
 
-    <nav class="bottom-nav" aria-label="Ana menü">
-        <button class="nav-btn active" data-tab="yuzde-tab" onclick="tabAc('yuzde-tab', this)">
-            <svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="7" cy="7" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg>
-            <span>Yüzdelik</span>
-        </button>
-        <button class="nav-btn" data-tab="islem-tab" onclick="tabAc('islem-tab', this)">
-            <svg viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="M12 5v14"></path><path d="M17 7l-2 2"></path><path d="M17 17l-2-2"></path></svg>
-            <span>4 İşlem</span>
-        </button>
-    </nav>
-
-    <textarea id="copyHelper" style="position:absolute; left:-9999px;"></textarea>
-
-    <script>
-        let aktifOp = "+";
-
-        const islemAdlari = {
-            "+": "Toplama işlemi",
-            "-": "Çıkarma işlemi",
-            "*": "Çarpma işlemi",
-            "/": "Bölme işlemi"
-        };
-
-        window.addEventListener("load", () => {
-            const initialTab = location.hash === "#islem" ? "islem-tab" : "yuzde-tab";
-            const initialBtn = document.querySelector(`[data-tab="${initialTab}"]`);
-
-            if (initialBtn) {
-                tabAc(initialTab, initialBtn);
-            }
-
-            setTimeout(() => {
-                document.body.classList.add("loaded");
-            }, 500);
+        const yList = document.getElementById('yuzdeListesi');
+        const sList = document.getElementById('switchListesi');
+        
+        oranlar.forEach(o => {
+            const isVisible = localStorage.getItem('rate-'+o) !== 'false';
+            yList.innerHTML += `<div class="rate-row ${isVisible ? '' : 'hidden'}" id="row-${o}"><span>%${o}</span><span class="rate-val" id="r${o}">0,000</span><button class="copy-btn" onclick="kopyala('r${o}')"><i class="fa-regular fa-copy"></i></button></div>`;
+            sList.innerHTML += `<div class="setting-item"><span>%${o} Göster</span><label class="switch"><input type="checkbox" ${isVisible ? 'checked' : ''} onchange="toggleRate(${o}, this.checked)"><span class="slider"></span></label></div>`;
         });
 
-        function tabAc(id, btn) {
-            document.querySelectorAll(".screen").forEach(tab => tab.classList.remove("active"));
-            document.querySelectorAll(".nav-btn").forEach(nav => nav.classList.remove("active"));
-            document.getElementById(id).classList.add("active");
-            btn.classList.add("active");
-        }
+        ['topla','cikar','carp','bol'].forEach(op => {
+            const isVisible = localStorage.getItem('op-'+op) !== 'false';
+            document.getElementById('btn-'+op).classList.toggle('hidden', !isVisible);
+            document.getElementById('sw-'+op).checked = isVisible;
+        });
 
-        function temizSayi(value) {
-            return parseFloat(String(value).replace(",", "."));
-        }
+        setTimeout(() => document.body.classList.add('loaded'), 700);
+    };
 
-        function formatla(num) {
-            return new Intl.NumberFormat("tr-TR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(num);
-        }
+    function setTheme(t) { 
+        document.body.setAttribute('data-theme', t); 
+        localStorage.setItem('apexTheme', t);
+        doMath(); 
+    }
 
-        function hesaplaYuzde() {
-            const val = temizSayi(document.getElementById("ihaleFiyati").value);
-            const oranlar = [85, 84, 70, 55, 40, 30, 20];
+    function toggleRate(o, isVisible) { 
+        document.getElementById(`row-${o}`).classList.toggle('hidden', !isVisible); 
+        localStorage.setItem('rate-'+o, isVisible);
+    }
 
-            oranlar.forEach(oran => {
-                const sonuc = Number.isNaN(val) ? 0 : (val * oran) / 100;
-                document.getElementById(`r${oran}`).innerText = formatla(sonuc);
-            });
-        }
+    function toggleOp(op, isVisible) { 
+        document.getElementById(`btn-${op}`).classList.toggle('hidden', !isVisible); 
+        localStorage.setItem('op-'+op, isVisible);
+    }
 
-        function islemSec(op, btn) {
-            aktifOp = op;
-            document.querySelectorAll(".operation-card").forEach(card => card.classList.remove("active"));
-            btn.classList.add("active");
-            document.getElementById("islemBaslik").innerText = islemAdlari[op];
-            hesaplaIslem();
-        }
+    function showTab(id, btn) {
+        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('settings-btn').classList.remove('active');
+        document.getElementById(id).style.display = 'block';
+        if(btn) btn.classList.add('active');
+    }
 
-        function hesaplaIslem() {
-            const s1 = temizSayi(document.getElementById("sayi1").value);
-            const s2 = temizSayi(document.getElementById("sayi2").value);
+    function showSettings() {
+        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('tab-ayarlar').style.display = 'block';
+        document.getElementById('settings-btn').classList.add('active');
+    }
 
-            if (Number.isNaN(s1) || Number.isNaN(s2)) {
-                document.getElementById("islemSonuc").innerText = "0,00";
-                return;
-            }
+    function closeSettings() { showTab('tab-yuzde', document.getElementById('nav-yuzde')); }
 
-            let sonuc = 0;
+    function format(n) {
+        const res = Math.round((n + Number.EPSILON) * 1000) / 1000;
+        return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 3, maximumFractionDigits: 3 }).format(res);
+    }
 
-            if (aktifOp === "+") sonuc = s1 + s2;
-            if (aktifOp === "-") sonuc = s1 - s2;
-            if (aktifOp === "*") sonuc = s1 * s2;
-            if (aktifOp === "/") sonuc = s2 === 0 ? 0 : s1 / s2;
+    function hesapla() {
+        const val = parseFloat(document.getElementById('fiyatInp').value) || 0;
+        oranlar.forEach(o => { document.getElementById('r'+o).innerText = format((val * o) / 100); });
+    }
 
-            document.getElementById("islemSonuc").innerText = formatla(sonuc);
-        }
+    function setOp(op, btn) {
+        currentOp = op;
+        document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        doMath();
+    }
 
-        function kopyala(id) {
-            const span = document.getElementById(id);
-            const helper = document.getElementById("copyHelper");
-            const text = span.innerText.replace(/\./g, "").replace(",", ".");
-            const btn = span.closest(".rate-row, .operation-result").querySelector(".copy-btn");
-            const oldText = btn.innerText;
+    function doMath() {
+        const v1 = parseFloat(document.getElementById('s1').value) || 0;
+        const v2 = parseFloat(document.getElementById('s2').value) || 0;
+        let res = 0;
+        if(currentOp === 'TOPLAMA') res = v1 + v2;
+        else if(currentOp === 'ÇIKARMA') res = v1 - v2;
+        else if(currentOp === 'ÇARPMA') res = v1 * v2;
+        else if(currentOp === 'BÖLME') res = v2 !== 0 ? v1 / v2 : 0;
+        document.getElementById('mathResult').innerText = format(res);
+    }
 
-            helper.value = text;
-            helper.select();
-            document.execCommand("copy");
+    function kopyala(id) {
+        const helper = document.getElementById("copyHelper");
+        helper.value = document.getElementById(id).innerText.replace(/\./g, "").replace(",", ".");
+        helper.select();
+        document.execCommand("copy");
+    }
 
-            btn.innerText = "✓";
-            setTimeout(() => {
-                btn.innerText = oldText;
-            }, 900);
-        }
-
-        function temizleYuzde() {
-            document.getElementById("ihaleFiyati").value = "";
-            document.querySelectorAll("#yuzde-tab .value").forEach(item => {
-                item.innerText = "0,00";
-            });
-        }
-
-        function temizleIslem() {
-            document.getElementById("sayi1").value = "";
-            document.getElementById("sayi2").value = "";
-            document.getElementById("islemSonuc").innerText = "0,00";
-        }
-    </script>
+    function resetYuzde() { document.getElementById('fiyatInp').value = ''; hesapla(); }
+</script>
 </body>
 </html>
