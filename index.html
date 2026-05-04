@@ -174,13 +174,13 @@
         <div id="yuzde-tab" class="tab-content active">
             <input type="number" id="ihaleFiyati" class="fiyat-input bg-red" placeholder="0" inputmode="decimal" oninput="hesaplaYuzde()">
             <div class="sonuc-kutusu" style="margin-top: 15px;">
-                <div class="oran-satiri"><span>%85:</span><div><span id="r85" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r85')">✓</button></div></div>
-                <div class="oran-satiri"><span>%84:</span><div><span id="r84" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r84')">✓</button></div></div>
-                <div class="oran-satiri"><span>%70:</span><div><span id="r70" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r70')">✓</button></div></div>
-                <div class="oran-satiri"><span>%55:</span><div><span id="r55" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r55')">✓</button></div></div>
-                <div class="oran-satiri"><span>%40:</span><div><span id="r40" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r40')">✓</button></div></div>
-                <div class="oran-satiri"><span>%30:</span><div><span id="r30" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r30')">✓</button></div></div>
-                <div class="oran-satiri"><span>%20:</span><div><span id="r20" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r20')">✓</button></div></div>
+                <div class="oran-satiri"><span>%85:</span><div><span id="r85" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r85')">⎗</button></div></div>
+                <div class="oran-satiri"><span>%84:</span><div><span id="r84" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r84')">⎗</button></div></div>
+                <div class="oran-satiri"><span>%70:</span><div><span id="r70" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r70')">⎗</button></div></div>
+                <div class="oran-satiri"><span>%55:</span><div><span id="r55" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r55')">⎗</button></div></div>
+                <div class="oran-satiri"><span>%40:</span><div><span id="r40" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r40')">⎗</button></div></div>
+                <div class="oran-satiri"><span>%30:</span><div><span id="r30" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r30')">⎗</button></div></div>
+                <div class="oran-satiri"><span>%20:</span><div><span id="r20" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('r20')">⎗</button></div></div>
             </div>
             <button class="temizle-btn" onclick="temizleYuzde()">% GEÇMİŞİ SİL</button>
         </div>
@@ -199,7 +199,7 @@
             <div class="sonuc-kutusu" style="margin-top: 15px;">
                 <div class="oran-satiri">
                     <span>SONUÇ:</span>
-                    <div><span id="islemSonuc" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('islemSonuc')">📋</button></div>
+                    <div><span id="islemSonuc" class="fiyat">0.00</span><button class="kopyala-btn" onclick="kopyala('islemSonuc')">⎙</button></div>
                 </div>
             </div>
             <button class="temizle-btn" onclick="temizleIslem()">TEMİZLE</button>
@@ -268,7 +268,7 @@
             
             const btn = span.nextElementSibling;
             const originalText = btn.innerText;
-            btn.innerText = "✅";
+            btn.innerText = "✓";
             setTimeout(() => btn.innerText = originalText, 1000);
         }
 
