@@ -88,7 +88,6 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* NAV KLAVYE SABİTLEME */
         nav {
             position: fixed !important; 
             bottom: 15px !important; 
@@ -99,7 +98,7 @@
             background: rgba(13, 17, 23, 0.95); 
             backdrop-filter: blur(10px);
             display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
+            grid-template-columns: repeat(2, 1fr); 
             padding: 8px; 
             border-radius: 25px; 
             border: 1px solid var(--line);
@@ -108,28 +107,10 @@
             transition: opacity 0.2s ease, visibility 0.2s;
         }
         
-        .nav-hidden {
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none;
-        }
-
+        .nav-hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none; }
         .nav-item { background: transparent; border: none; color: var(--muted); font-weight: 800; padding: 12px; cursor: pointer; border-radius: 18px; font-size: 13px; }
         .nav-item.active { background: rgba(255,255,255,0.05); color: var(--accent); }
-
         .btn-clear { width: 100%; padding: 15px; background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 11px; }
-
-        #chat-display {
-            height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
-            padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--line); margin-bottom: 15px;
-        }
-        .msg-bubble { background: rgba(255, 255, 255, 0.03); padding: 8px 12px; border-radius: 12px; border-left: 3px solid var(--accent); animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .msg-user { color: var(--accent); font-weight: bold; font-size: 11px; display: block; margin-bottom: 2px; }
-        .msg-text { color: #fff; font-size: 14px; word-break: break-all; }
-        .chat-input-group { display: flex; gap: 8px; margin-top: 10px; }
-        #chat-user-inp { width: 85px; color: var(--accent); border-color: var(--line); font-size: 12px; text-align: center; padding: 10px; }
-        #chat-msg-inp { flex: 1; text-align: left; font-size: 14px; padding: 10px; }
     </style>
 </head>
 <body>
@@ -195,19 +176,6 @@
         </div>
     </div>
 
-    <div id="tab-chat" class="tab-content" style="display:none;">
-        <div class="card">
-            <span class="label">Global Sohbet</span>
-            <div id="chat-display"></div>
-            <div id="admin-panel"></div> 
-            <div class="chat-input-group">
-                <input type="text" id="chat-user-inp" placeholder="İsim" maxlength="15">
-                <input type="text" id="chat-msg-inp" placeholder="Mesaj yaz..." maxlength="100">
-            </div>
-            <button class="btn-clear" style="border-color: var(--accent); color: var(--accent); margin-top: 15px;" onclick="sendChat()">GÖNDER</button>
-        </div>
-    </div>
-
     <div id="tab-ayarlar" class="tab-content" style="display:none;">
         <div class="card">
             <span class="label">Standart Renkler</span>
@@ -241,13 +209,11 @@
 <nav id="bottom-nav">
     <button class="nav-item active" id="nav-yuzde" onclick="showTab('tab-yuzde', this)">Yüzdelik</button>
     <button class="nav-item" id="nav-islem" onclick="showTab('tab-islem', this)">4 İşlem</button>
-    <button class="nav-item" id="nav-chat" onclick="showTab('tab-chat', this)">Chat</button>
 </nav>
 
 <textarea id="copyHelper" style="position:absolute; left:-999px;"></textarea>
 
 <script>
-    // FIREBASE YAPILANDIRMASI
     const firebaseConfig = {
         apiKey: "AIzaSyDNPL2DEWya8rm1AefazY1PbWwnnWpAHus",
         authDomain: "apex-2b407.firebaseapp.com",
@@ -259,10 +225,7 @@
         databaseURL: "https://apex-2b407.europe-west1.firebasedatabase.app"
     };
     
-    // Firebase Başlatma Kontrolü
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     const oranlar = [85, 84, 70, 69, 55, 54, 40, 39, 30, 20];
@@ -271,20 +234,6 @@
     window.onload = () => {
         const savedTheme = localStorage.getItem('apexTheme') || 'blue';
         setTheme(savedTheme);
-
-        const lock = localStorage.getItem('device_lock');
-        const userInp = document.getElementById('chat-user-inp');
-        if(lock) {
-            userInp.value = lock;
-            userInp.disabled = true;
-            if(lock === "WqAzer") adminPanelAc();
-        }
-
-        // CHAT MESAJLARINI DİNLE
-        db.ref("messages").limitToLast(30).on("child_added", (snapshot) => {
-            const data = snapshot.val();
-            appendMessage(data.user, data.text);
-        });
 
         const yList = document.getElementById('yuzdeListesi');
         const sList = document.getElementById('switchListesi');
@@ -298,7 +247,6 @@
         setTimeout(() => document.body.classList.add('loaded'), 700);
     };
 
-    // Temel Fonksiyonlar
     function showTab(id, btn) {
         document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -352,74 +300,8 @@
 
     function resetYuzde() { document.getElementById('fiyatInp').value = ''; hesapla(); }
 
-    function sendChat() {
-        const userInp = document.getElementById('chat-user-inp');
-        const msgInp = document.getElementById('chat-msg-inp');
-        const rawName = userInp.value.trim();
-        const lock = localStorage.getItem('device_lock');
-
-        if (!msgInp.value.trim()) return;
-
-                // Admin Girişi
-        if(rawName === "safurem" && !lock) {
-            localStorage.setItem('device_lock', "WqAzer");
-            location.reload();
-            return;
-        }
-
-        const name = lock || rawName || "Anonim";
-        if(!lock) {
-            if(!confirm("İsim '" + name + "' olarak mühürlensin mi?")) return;
-            localStorage.setItem('device_lock', name);
-            userInp.disabled = true;
-        }
-
-        // Ban Kontrolü
-        const banKey = localStorage.getItem('chatBan_' + name);
-        if(banKey && Date.now() < banKey) {
-            alert("Susturuldunuz!");
-            return;
-        }
-
-        // FIREBASE'E GÖNDER
-        db.ref("messages").push({
-            user: name,
-            text: msgInp.value.trim(),
-            time: firebase.database.ServerValue.TIMESTAMP
-        });
-
-        msgInp.value = "";
-    }
-
-    function appendMessage(user, text) {
-        const chatDisplay = document.getElementById('chat-display');
-        const html = `<div class="msg-bubble"><span class="msg-user">${user}</span><span class="msg-text">${text}</span></div>`;
-        chatDisplay.innerHTML += html;
-        chatDisplay.scrollTop = chatDisplay.scrollHeight;
-    }
-
-    function adminPanelAc() {
-        document.getElementById('admin-panel').innerHTML = `
-            <div class="card" style="border:1px solid #ff3131; padding:10px; margin-top:5px;">
-                <span class="label" style="color:#ff3131">Admin: Ban Sistemi</span>
-                <div style="display:flex; gap:5px;">
-                    <input type="text" id="ban-target" placeholder="İsim" style="font-size:14px; text-align:left; height:35px; padding:5px;">
-                    <button class="btn-clear" style="margin:0; width:80px; background:#ff3131; color:#fff;" onclick="execBan()">BAN</button>
-                </div>
-            </div>`;
-    }
-
-    function execBan() {
-        const target = document.getElementById('ban-target').value;
-        if(!target) return;
-        localStorage.setItem('chatBan_' + target, Date.now() + 600000); 
-        alert(target + " 10 dk susturuldu.");
-    }
-
-    /* === KLAVYE SABİTLEME MANTIĞI === */
     const initialHeight = window.innerHeight;
     const bottomNav = document.getElementById('bottom-nav');
-
     window.addEventListener('resize', () => {
         if (window.innerHeight < initialHeight * 0.8) {
             bottomNav.classList.add('nav-hidden'); 
