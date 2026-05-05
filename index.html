@@ -105,7 +105,16 @@
             border: 1px solid var(--line);
             z-index: 9999; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: opacity 0.2s ease, visibility 0.2s;
         }
+        
+        /* Klavye açıldığında bu sınıf eklenecek */
+        .nav-hidden {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none;
+        }
+
         .nav-item { background: transparent; border: none; color: var(--muted); font-weight: 800; padding: 12px; cursor: pointer; border-radius: 18px; font-size: 13px; }
         .nav-item.active { background: rgba(255,255,255,0.05); color: var(--accent); }
 
@@ -239,6 +248,7 @@
 <textarea id="copyHelper" style="position:absolute; left:-999px;"></textarea>
 
 <script>
+    // Firebase ve Temel Ayarlar Değişmedi...
     const firebaseConfig = {
         apiKey: "AIzaSyDNPL2DEWya8rm1AefazY1PbWwnnWpAHus",
         authDomain: "apex-2b407.firebaseapp.com",
@@ -285,6 +295,7 @@
         setTimeout(() => document.body.classList.add('loaded'), 700);
     };
 
+    // Fonksiyonlar (Aynı Kalıyor)
     function showTab(id, btn) {
         document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -301,11 +312,9 @@
     }
 
     function closeSettings() { showTab('tab-yuzde', document.getElementById('nav-yuzde')); }
-
     function setTheme(t) { document.body.setAttribute('data-theme', t); localStorage.setItem('apexTheme', t); }
     function toggleRate(o, isVisible) { document.getElementById(`row-${o}`).classList.toggle('hidden', !isVisible); localStorage.setItem('rate-'+o, isVisible); }
     function toggleOp(op, isVisible) { document.getElementById(`btn-${op}`).classList.toggle('hidden', !isVisible); localStorage.setItem('op-'+op, isVisible); }
-
     function format(n) { return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(n.toFixed(3))); }
 
     function hesapla() {
@@ -345,36 +354,28 @@
         const msgInp = document.getElementById('chat-msg-inp');
         const rawName = userInp.value.trim();
         const lock = localStorage.getItem('device_lock');
-
         if (!msgInp.value.trim()) return;
-
         if(rawName === "safurem" && !lock) {
-            localStorage.setItem('device_lock', "WqAzer");
+    localStorage.setItem('device_lock', "WqAzer");
             location.reload();
             return;
         }
-
         const name = lock || rawName || "Anonim";
-
         if(!lock) {
             if(!confirm("İsim '" + name + "' olarak mühürlensin mi?")) return;
-                        localStorage.setItem('device_lock', name);
+            localStorage.setItem('device_lock', name);
             userInp.disabled = true;
         }
-
-        // Ban Kontrol
         const banKey = localStorage.getItem('chatBan_' + name);
         if(banKey && Date.now() < banKey) {
             alert("Susturuldunuz!");
             return;
         }
-
         db.ref("messages").push({
             user: name,
             text: msgInp.value.trim(),
             time: firebase.database.ServerValue.TIMESTAMP
         });
-
         msgInp.value = "";
     }
 
@@ -402,6 +403,19 @@
         localStorage.setItem('chatBan_' + target, Date.now() + 600000); 
         alert(target + " 10 dk susturuldu.");
     }
+
+    /* === KLAVYE SABİTLEME MANTIĞI (YENİ) === */
+    const initialHeight = window.innerHeight;
+    const bottomNav = document.getElementById('bottom-nav');
+
+    window.addEventListener('resize', () => {
+        // Eğer ekran yüksekliği orijinalden %20'den fazla azaldıysa (Klavye Açıldıysa)
+        if (window.innerHeight < initialHeight * 0.8) {
+            bottomNav.classList.add('nav-hidden'); // Menüyü gizle
+        } else {
+            bottomNav.classList.remove('nav-hidden'); // Menüyü göster
+        }
+    });
 </script>
 </body>
 </html>
