@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>ApeX Pro v4.1 - Birhat Yüzkan</title>
+    <title>ApeX Pro v4.2 - WqAzer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
@@ -84,33 +84,33 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* GÜNCELLENEN NAV STİLİ */
+        /* NAV STİLİ GÜNCELLEMESİ */
         nav {
-            position: fixed; 
-            bottom: 25px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: calc(100% - 30px); 
-            max-width: 400px;
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); 
+            width: calc(100% - 30px); max-width: 400px;
             background: rgba(13, 17, 23, 0.98); 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            padding: 8px; 
-            border-radius: 25px; 
-            border: 1px solid var(--line);
-            z-index: 100;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: grid; grid-template-columns: repeat(3, 1fr); 
+            padding: 8px; border-radius: 25px; border: 1px solid var(--line);
+            z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        
-        /* Klavye açıldığında menüyü gizlemek için class */
-        .nav-hidden {
-            display: none !important;
-        }
-
-        .nav-item { background: transparent; border: none; color: var(--muted); font-weight: 800; padding: 15px; cursor: pointer; border-radius: 18px; }
+        .nav-hidden { display: none !important; }
+        .nav-item { background: transparent; border: none; color: var(--muted); font-weight: 800; padding: 12px; cursor: pointer; border-radius: 18px; font-size: 13px; }
         .nav-item.active { background: rgba(255,255,255,0.05); color: var(--accent); }
 
         .btn-clear { width: 100%; padding: 15px; background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 11px; }
+
+        /* CHAT ÖZEL STİLLERİ */
+        #chat-display {
+            height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+            padding: 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--line); margin-bottom: 15px;
+        }
+        .msg-bubble { background: rgba(255, 255, 255, 0.03); padding: 8px 12px; border-radius: 12px; border-left: 3px solid var(--accent); animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .msg-user { color: var(--accent); font-weight: bold; font-size: 11px; display: block; margin-bottom: 2px; }
+        .msg-text { color: #fff; font-size: 14px; word-break: break-all; }
+        .chat-input-group { display: flex; gap: 8px; margin-top: 10px; }
+        #chat-user-inp { width: 85px; color: var(--accent); border-color: var(--line); font-size: 12px; text-align: center; padding: 10px; }
+        #chat-msg-inp { flex: 1; text-align: left; font-size: 14px; padding: 10px; }
     </style>
 </head>
 <body>
@@ -121,7 +121,9 @@
             <path d="M50 15 L85 85 L50 70 L15 85 Z M50 15 L50 70" />
         </svg>
     </div>
-    <div class="loader-logo">ApeX-v4.1</div>
+    <div class="loader-logo">ApeX-v4.2</div>
+    <div class="loader-logo">WqAzer</div>
+    <div class="loader-logo">Tarafından Yapıldı</div>
 </div>
 
 <div class="container">
@@ -134,7 +136,7 @@
             </div>
             <div>
                 <div class="apex-text">ApeX Pro</div>
-                <small style="color:var(--accent); font-weight: bold; letter-spacing: 0.5px;">Birhat Yüzkan v4.1</small>
+                <small style="color:var(--accent); font-weight: bold; letter-spacing: 0.5px;">WqAzer v4.2</small>
             </div>
         </div>
         <div class="top-settings-btn" id="settings-btn" onclick="showSettings()">
@@ -174,6 +176,20 @@
         </div>
     </div>
 
+    <div id="tab-chat" class="tab-content" style="display:none;">
+        <div class="card">
+            <span class="label">Global Sohbet</span>
+            <div id="chat-display">
+                <div class="msg-bubble"><span class="msg-user">Sistem</span><span class="msg-text">ApeX Chat Modülü Aktif.</span></div>
+            </div>
+            <div class="chat-input-group">
+                <input type="text" id="chat-user-inp" placeholder="İsim" maxlength="10">
+                <input type="text" id="chat-msg-inp" placeholder="Mesaj yaz..." maxlength="100">
+            </div>
+            <button class="btn-clear" style="border-color: var(--accent); color: var(--accent); margin-top: 15px;" onclick="sendChat()">GÖNDER</button>
+        </div>
+    </div>
+
     <div id="tab-ayarlar" class="tab-content" style="display:none;">
         <div class="card">
             <span class="label">Standart Renkler</span>
@@ -183,7 +199,6 @@
                 <div class="color-dot" style="background:#008f39;" onclick="setTheme('green')"></div>
                 <div class="color-dot" style="background:#fff01f;" onclick="setTheme('yellow')"></div>
             </div>
-            
             <span class="label">Takım Renkleri</span>
             <div class="color-grid">
                 <div class="color-dot" onclick="setTheme('fb')"><div class="split"><span style="background:#FFD700"></span><span style="background:#001d3d"></span></div></div>
@@ -191,7 +206,6 @@
                 <div class="color-dot" onclick="setTheme('bjk')"><div class="split"><span style="background:#000000"></span><span style="background:#ffffff"></span></div></div>
                 <div class="color-dot" onclick="setTheme('ts')"><div class="split"><span style="background:#800000"></span><span style="background:#6ecff6"></span></div></div>
             </div>
-
             <span class="label">İşlemleri Yönet</span>
             <div class="setting-item"><span>Toplama</span><label class="switch"><input type="checkbox" checked id="sw-topla" onchange="toggleOp('topla', this.checked)"><span class="slider"></span></label></div>
             <div class="setting-item"><span>Çıkarma</span><label class="switch"><input type="checkbox" checked id="sw-cikar" onchange="toggleOp('cikar', this.checked)"><span class="slider"></span></label></div>
@@ -209,6 +223,7 @@
 <nav id="bottom-nav">
     <button class="nav-item active" id="nav-yuzde" onclick="showTab('tab-yuzde', this)">Yüzdelik</button>
     <button class="nav-item" id="nav-islem" onclick="showTab('tab-islem', this)">4 İşlem</button>
+    <button class="nav-item" id="nav-chat" onclick="showTab('tab-chat', this)">Chat</button>
 </nav>
 
 <textarea id="copyHelper" style="position:absolute; left:-999px;"></textarea>
@@ -217,7 +232,6 @@
     const oranlar = [85, 84, 70, 69, 55, 54, 40, 39, 30, 20];
     let currentOp = 'TOPLAMA';
 
-    // KLAVYE KONTROLÜ: Klavye açıldığında menüyü gizler
     const initialHeight = window.innerHeight;
     window.addEventListener('resize', () => {
         const nav = document.getElementById('bottom-nav');
@@ -243,8 +257,10 @@
 
         ['topla','cikar','carp','bol'].forEach(op => {
             const isVisible = localStorage.getItem('op-'+op) !== 'false';
-            document.getElementById('btn-'+op).classList.toggle('hidden', !isVisible);
-            document.getElementById('sw-'+op).checked = isVisible;
+            const btn = document.getElementById('btn-'+op);
+            if(btn) btn.classList.toggle('hidden', !isVisible);
+            const sw = document.getElementById('sw-'+op);
+            if(sw) sw.checked = isVisible;
         });
 
         setTimeout(() => document.body.classList.add('loaded'), 700);
@@ -319,7 +335,29 @@
     }
 
     function resetYuzde() { document.getElementById('fiyatInp').value = ''; hesapla(); }
+
+    // CHAT FONKSİYONLARI
+    function sendChat() {
+        const userInp = document.getElementById('chat-user-inp');
+        const msgInp = document.getElementById('chat-msg-inp');
+        const chatDisplay = document.getElementById('chat-display');
+
+        if (msgInp.value.trim() !== "") {
+            const user = userInp.value.trim() || "Lütfen İsim Seçiniz, Aksi Takdirde IP Banı Yersiniz";
+            const msg = msgInp.value.trim();
+
+            const html = `<div class="msg-bubble"><span class="msg-user">${user}</span><span class="msg-text">${msg}</span></div>`;
+            chatDisplay.innerHTML += html;
+            msgInp.value = "";
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+            if(navigator.vibrate) navigator.vibrate(10);
+        }
+    }
+
+    document.getElementById('chat-msg-inp').addEventListener("keypress", function(e) {
+        if (e.key === "Enter") sendChat();
+    });
 </script>
 </body>
-                                                                                                                                                                                                                </html>
-                                                                                                                                                                                                                
+                                                                                                                                                                                              </html>
+                                                                                                                                                                                              
