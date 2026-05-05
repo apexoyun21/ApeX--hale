@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>ApeX Pro v4.1 - Birhat Yüzkan</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -16,7 +16,7 @@
             --muted: #8b949e;
         }
 
-        /* Takım Temaları - Sarılar Eşitlendi (#FFD700) */
+        /* Takım Temaları */
         [data-theme="fb"] { --accent: #FFD700; --accent-glow: rgba(255, 215, 0, 0.4); --bg: #001d3d; }
         [data-theme="gs"] { --accent: #FFD700; --accent-glow: rgba(255, 215, 0, 0.4); --bg: #2d0000; }
         [data-theme="bjk"] { --accent: #ffffff; --accent-glow: rgba(255, 255, 255, 0.2); --bg: #000000; }
@@ -28,7 +28,7 @@
         [data-theme="blue"] { --accent: #00d2ff; --accent-glow: rgba(0, 210, 255, 0.2); }
 
         * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: all 0.25s ease; }
-        body { margin: 0; padding: 15px 0 110px; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        body { margin: 0; padding: 15px 0 120px; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
         #loader {
             position: fixed; inset: 0; z-index: 9999; background: #000;
@@ -84,12 +84,29 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(22px); }
 
+        /* GÜNCELLENEN NAV STİLİ */
         nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
-            width: calc(100% - 30px); max-width: 400px;
-            background: rgba(13, 17, 23, 0.95); display: grid; grid-template-columns: repeat(2, 1fr); 
-            padding: 8px; border-radius: 25px; border: 1px solid var(--line);
+            position: fixed; 
+            bottom: 25px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: calc(100% - 30px); 
+            max-width: 400px;
+            background: rgba(13, 17, 23, 0.98); 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            padding: 8px; 
+            border-radius: 25px; 
+            border: 1px solid var(--line);
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+        
+        /* Klavye açıldığında menüyü gizlemek için class */
+        .nav-hidden {
+            display: none !important;
+        }
+
         .nav-item { background: transparent; border: none; color: var(--muted); font-weight: 800; padding: 15px; cursor: pointer; border-radius: 18px; }
         .nav-item.active { background: rgba(255,255,255,0.05); color: var(--accent); }
 
@@ -128,7 +145,7 @@
     <div id="tab-yuzde" class="tab-content">
         <div class="card">
             <span class="label">İhale Fiyatı</span>
-            <input type="number" id="fiyatInp" placeholder="0,000" oninput="hesapla()">
+            <input type="number" id="fiyatInp" inputmode="decimal" placeholder="0,000" oninput="hesapla()">
         </div>
         <div class="card" id="yuzdeListesi"></div>
         <button class="btn-clear" onclick="resetYuzde()">SIFIRLA</button>
@@ -143,10 +160,10 @@
         </div>
         <div class="card">
             <span class="label">Değer 1</span>
-            <input type="number" id="s1" placeholder="0" oninput="doMath()">
+            <input type="number" id="s1" inputmode="decimal" placeholder="0" oninput="doMath()">
             <div class="divider" style="height: 1px; background: var(--line); margin: 15px 0;"></div>
             <span class="label">Değer 2</span>
-            <input type="number" id="s2" placeholder="0" oninput="doMath()">
+            <input type="number" id="s2" inputmode="decimal" placeholder="0" oninput="doMath()">
         </div>
         <div class="card">
             <span class="label">Sonuç</span>
@@ -199,6 +216,17 @@
 <script>
     const oranlar = [85, 84, 70, 69, 55, 54, 40, 39, 30, 20];
     let currentOp = 'TOPLAMA';
+
+    // KLAVYE KONTROLÜ: Klavye açıldığında menüyü gizler
+    const initialHeight = window.innerHeight;
+    window.addEventListener('resize', () => {
+        const nav = document.getElementById('bottom-nav');
+        if (window.innerHeight < initialHeight * 0.8) {
+            nav.classList.add('nav-hidden');
+        } else {
+            nav.classList.remove('nav-hidden');
+        }
+    });
 
     window.onload = () => {
         const savedTheme = localStorage.getItem('apexTheme') || 'blue';
@@ -293,4 +321,5 @@
     function resetYuzde() { document.getElementById('fiyatInp').value = ''; hesapla(); }
 </script>
 </body>
-</html>
+                                                                                                                                                                                                                </html>
+                                                                                                                                                                                                                
