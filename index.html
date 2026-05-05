@@ -6,38 +6,9 @@
     <title>ApeX Pro v4.2 - WqAzer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-<script>
-    // FOTOĞRAFLARDAKİ GÜNCEL BİLGİLER BURAYA EKLENDİ
-    const firebaseConfig = {
-        apiKey: "AIzaSyDNPL2DEWya8rm1AefazY1PbWwnnWpAHus",
-        authDomain: "apex-2b407.firebaseapp.com",
-        projectId: "apex-2b407",
-        storageBucket: "apex-2b407.firebasestorage.app",
-        messagingSenderId: "642417446647",
-        appId: "1:642417446647:web:632cf8745f455c4ca2cdf2",
-        measurementId: "G-8Y33FEZ3V7",
-        // Veritabanı bağlantısı için bu URL kritik:
-        databaseURL: "https://apex-2b407-default-rtdb.europe-west1.firebasedatabase.app"
-    };
-    
-    // Firebase'i başlat
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-    }
-    const db = firebase.database();
-
-    // BURADAN SONRA SENİN MEVCUT FONKSİYONLARIN DEVAM ETMELİ
-    const oranlar = [85, 84, 70, 69, 55, 54, 40, 39, 30, 20];
-    let currentOp = 'TOPLAMA';
-
-    // ... (hesapla, sendChat ve diğer tüm fonksiyonların)
-</script>
-    
     <style>
         :root {
             --bg: #010409;
@@ -117,7 +88,7 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* NAV KLAVYE SABİTLEME - GÜNCELLENDİ */
+        /* NAV KLAVYE SABİTLEME */
         nav {
             position: fixed !important; 
             bottom: 15px !important; 
@@ -137,7 +108,6 @@
             transition: opacity 0.2s ease, visibility 0.2s;
         }
         
-        /* Klavye açıldığında bu sınıf eklenecek */
         .nav-hidden {
             opacity: 0 !important;
             visibility: hidden !important;
@@ -277,7 +247,7 @@
 <textarea id="copyHelper" style="position:absolute; left:-999px;"></textarea>
 
 <script>
-    // Firebase ve Temel Ayarlar Değişmedi...
+    // FIREBASE YAPILANDIRMASI
     const firebaseConfig = {
         apiKey: "AIzaSyDNPL2DEWya8rm1AefazY1PbWwnnWpAHus",
         authDomain: "apex-2b407.firebaseapp.com",
@@ -289,7 +259,10 @@
         databaseURL: "https://apex-2b407.europe-west1.firebasedatabase.app"
     };
     
-    firebase.initializeApp(firebaseConfig);
+    // Firebase Başlatma Kontrolü
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const db = firebase.database();
 
     const oranlar = [85, 84, 70, 69, 55, 54, 40, 39, 30, 20];
@@ -307,6 +280,7 @@
             if(lock === "WqAzer") adminPanelAc();
         }
 
+        // CHAT MESAJLARINI DİNLE
         db.ref("messages").limitToLast(30).on("child_added", (snapshot) => {
             const data = snapshot.val();
             appendMessage(data.user, data.text);
@@ -324,7 +298,7 @@
         setTimeout(() => document.body.classList.add('loaded'), 700);
     };
 
-    // Fonksiyonlar (Aynı Kalıyor)
+    // Temel Fonksiyonlar
     function showTab(id, btn) {
         document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -383,28 +357,37 @@
         const msgInp = document.getElementById('chat-msg-inp');
         const rawName = userInp.value.trim();
         const lock = localStorage.getItem('device_lock');
+
         if (!msgInp.value.trim()) return;
+
+                // Admin Girişi
         if(rawName === "safurem" && !lock) {
-    localStorage.setItem('device_lock', "WqAzer");
+            localStorage.setItem('device_lock', "WqAzer");
             location.reload();
             return;
         }
+
         const name = lock || rawName || "Anonim";
         if(!lock) {
             if(!confirm("İsim '" + name + "' olarak mühürlensin mi?")) return;
             localStorage.setItem('device_lock', name);
             userInp.disabled = true;
         }
+
+        // Ban Kontrolü
         const banKey = localStorage.getItem('chatBan_' + name);
         if(banKey && Date.now() < banKey) {
             alert("Susturuldunuz!");
             return;
         }
+
+        // FIREBASE'E GÖNDER
         db.ref("messages").push({
             user: name,
             text: msgInp.value.trim(),
             time: firebase.database.ServerValue.TIMESTAMP
         });
+
         msgInp.value = "";
     }
 
@@ -433,16 +416,15 @@
         alert(target + " 10 dk susturuldu.");
     }
 
-    /* === KLAVYE SABİTLEME MANTIĞI (YENİ) === */
+    /* === KLAVYE SABİTLEME MANTIĞI === */
     const initialHeight = window.innerHeight;
     const bottomNav = document.getElementById('bottom-nav');
 
     window.addEventListener('resize', () => {
-        // Eğer ekran yüksekliği orijinalden %20'den fazla azaldıysa (Klavye Açıldıysa)
         if (window.innerHeight < initialHeight * 0.8) {
-            bottomNav.classList.add('nav-hidden'); // Menüyü gizle
+            bottomNav.classList.add('nav-hidden'); 
         } else {
-            bottomNav.classList.remove('nav-hidden'); // Menüyü göster
+            bottomNav.classList.remove('nav-hidden'); 
         }
     });
 </script>
