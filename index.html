@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>ApeX Pro v4.2 - WqAzer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <style>
         :root {
@@ -38,7 +35,7 @@
             position: fixed; inset: 0; z-index: 9999; background: #000;
             display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: opacity 0.3s;
         }
-        body.loaded #loader { opacity: 0; visibility: hidden; }
+        body.loaded #loader { opacity: 0; visibility: hidden; pointer-events: none; }
         .loader-logo { color: var(--accent); font-size: 26px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 15px var(--accent-glow); }
 
         .container { width: calc(100% - 30px); max-width: 420px; margin: 0 auto; }
@@ -111,7 +108,7 @@
         .nav-item { background: transparent; border: none; color: var(--muted); font-weight: 800; padding: 12px; cursor: pointer; border-radius: 18px; font-size: 13px; }
         .nav-item.active { background: rgba(255,255,255,0.05); color: var(--accent); }
         .btn-clear { width: 100%; padding: 15px; background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 11px; }
-
+    </style>
 </head>
 <body>
 
@@ -150,8 +147,10 @@
             <input type="number" id="fiyatInp" inputmode="decimal" placeholder="0,000" oninput="hesapla()">
         </div>
         <div class="card" id="yuzdeListesi"></div>
-        <button class="btn-clear" onclick="resetYuzde()">SIFIRLA</button
+        <button class="btn-clear" onclick="resetYuzde()">SIFIRLA</button>
+    </div>
 
+    <div id="tab-islem" class="tab-content" style="display:none;">
         <div class="op-grid">
             <button class="op-btn active" id="btn-topla" onclick="setOp('TOPLAMA', this)">TOPLAMA</button>
             <button class="op-btn" id="btn-cikar" onclick="setOp('ÇIKARMA', this)">ÇIKARMA</button>
@@ -183,7 +182,7 @@
                 <div class="color-dot" style="background:#008f39;" onclick="setTheme('green')"></div>
                 <div class="color-dot" style="background:#fff01f;" onclick="setTheme('yellow')"></div>
             </div>
-                        <span class="label">Takım Renkleri</span>
+            <span class="label">Takım Renkleri</span>
             <div class="color-grid">
                 <div class="color-dot" onclick="setTheme('fb')"><div class="split"><span style="background:#FFD700"></span><span style="background:#001d3d"></span></div></div>
                 <div class="color-dot" onclick="setTheme('gs')"><div class="split"><span style="background:#ff0000"></span><span style="background:#FFD700"></span></div></div>
@@ -212,20 +211,6 @@
 <textarea id="copyHelper" style="position:absolute; left:-999px;"></textarea>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyDNPL2DEWya8rm1AefazY1PbWwnnWpAHus",
-        authDomain: "apex-2b407.firebaseapp.com",
-        projectId: "apex-2b407",
-        storageBucket: "apex-2b407.firebasestorage.app",
-        messagingSenderId: "642417446647",
-        appId: "1:642417446647:web:632cf8745f455c4ca2cdf2",
-        measurementId: "G-8Y33FEZ3V7",
-        databaseURL: "https://apex-2b407.europe-west1.firebasedatabase.app"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
     const oranlar = [85, 84, 70, 69, 55, 54, 40, 39, 30, 20];
     let currentOp = 'TOPLAMA';
 
@@ -236,13 +221,17 @@
         const yList = document.getElementById('yuzdeListesi');
         const sList = document.getElementById('switchListesi');
         
+        yList.innerHTML = '';
+        sList.innerHTML = '';
+
         oranlar.forEach(o => {
             const isVisible = localStorage.getItem('rate-'+o) !== 'false';
             yList.innerHTML += `<div class="rate-row ${isVisible ? '' : 'hidden'}" id="row-${o}"><span>%${o}</span><span class="rate-val" id="r${o}">0,000</span><button class="copy-btn" onclick="kopyala('r${o}')"><i class="fa-regular fa-copy"></i></button></div>`;
             sList.innerHTML += `<div class="setting-item"><span>%${o} Göster</span><label class="switch"><input type="checkbox" ${isVisible ? 'checked' : ''} onchange="toggleRate(${o}, this.checked)"><span class="slider"></span></label></div>`;
         });
 
-        setTimeout(() => document.body.classList.add('loaded'), 700);
+        // Hızlıca yükleme ekranını kaldırıyoruz
+        setTimeout(() => document.body.classList.add('loaded'), 400);
     };
 
     function showTab(id, btn) {
