@@ -15,99 +15,122 @@
             --line: rgba(255, 255, 255, 0.08);
             --text: #ffffff;
             --muted: #8b949e;
+            --input-bg: rgba(0, 0, 0, 0.3);
+            --btn-bg: rgba(255, 255, 255, 0.03);
+            --btn-active: rgba(255, 255, 255, 0.1);
         }
 
-        /* Takım Temaları */
+        /* Sabit Takım Temaları */
         [data-theme="fb"] { --accent: #FFD700; --accent-glow: rgba(255, 215, 0, 0.4); --bg: #001d3d; }
         [data-theme="gs"] { --accent: #FFD700; --accent-glow: rgba(255, 215, 0, 0.4); --bg: #2d0000; }
         [data-theme="bjk"] { --accent: #ffffff; --accent-glow: rgba(255, 255, 255, 0.2); --bg: #000000; }
         [data-theme="ts"] { --accent: #6ecff6; --accent-glow: rgba(110, 207, 246, 0.3); --bg: #4a0014; }
-        
-        [data-theme="red"] { --accent: #ff3131; --accent-glow: rgba(255, 49, 49, 0.2); }
-        [data-theme="green"] { --accent: #008f39; --accent-glow: rgba(0, 143, 57, 0.2); }
-        [data-theme="yellow"] { --accent: #fff01f; --accent-glow: rgba(255, 240, 31, 0.2); }
-        [data-theme="blue"] { --accent: #00d2ff; --accent-glow: rgba(0, 210, 255, 0.2); }
 
-        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; transition: all 0.25s ease; }
-        body { margin: 0; padding: 15px 0 120px; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { margin: 0; padding: 15px 0 120px; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; transition: background-color 0.4s ease, color 0.4s ease; }
 
+        /* GİRİŞ EKRANI (İLK KODDAKİ GİBİ YAPILDI) */
         #loader {
             position: fixed; inset: 0; z-index: 9999; background: #000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: opacity 0.3s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: opacity 0.5s ease, visibility 0.5s;
         }
         body.loaded #loader { opacity: 0; visibility: hidden; pointer-events: none; }
+        
         .loader-logo { color: var(--accent); font-size: 26px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 15px var(--accent-glow); }
 
-        .container { width: calc(100% - 30px); max-width: 420px; margin: 0 auto; }
-        header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .container { width: calc(100% - 30px); max-width: 420px; margin: 0 auto; position: relative; }
+        header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         
         .pinnacle-logo { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
-        .pinnacle-svg { width: 100%; height: 100%; fill: none; stroke: var(--accent); stroke-width: 2.8; filter: drop-shadow(0 0 5px var(--accent-glow)); }
+        .pinnacle-svg { width: 100%; height: 100%; fill: none; stroke: var(--accent); stroke-width: 2.8; filter: drop-shadow(0 0 5px var(--accent-glow)); transition: stroke 0.3s ease; }
         .apex-text { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1; }
 
         .top-settings-btn {
             width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--line);
             display: grid; place-items: center; color: var(--muted); cursor: pointer;
-            background: rgba(255,255,255,0.02); font-size: 18px;
+            background: var(--btn-bg); font-size: 18px; transition: all 0.2s;
         }
         .top-settings-btn.active { color: var(--accent); border-color: var(--accent); }
 
-        .card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 12px; }
-        .label { color: var(--muted); font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: block; letter-spacing: 1px; }
-
-        input {
-            width: 100%; background: rgba(0,0,0,0.3); border: 2px solid var(--line);
-            border-radius: 15px; color: var(--accent); font-size: 28px;
-            text-align: right; padding: 12px; outline: none; font-weight: bold;
+        .tab-content { display: none; opacity: 0; transform: translateX(30px); }
+        .tab-content.active { display: block; animation: iosSlideIn 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        
+        @keyframes iosSlideIn {
+            0% { opacity: 0; transform: translateX(30px); }
+            100% { opacity: 1; transform: translateX(0); }
         }
 
-        .rate-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 18px; margin-bottom: 12px; transition: background 0.3s, border-color 0.3s; }
+        .label { color: var(--muted); font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 1px; }
+
+        input {
+            width: 100%; background: var(--input-bg); border: 2px solid var(--line);
+            border-radius: 15px; color: var(--accent); font-size: 28px;
+            text-align: right; padding: 12px; outline: none; font-weight: bold;
+            transition: border-color 0.2s ease, background 0.3s;
+        }
+        input:focus { border-color: var(--accent); }
+
+        .rate-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 5px; border-bottom: 1px solid var(--line); }
         .rate-row.hidden { display: none; }
         .rate-val { color: var(--accent); font-size: 19px; font-weight: 800; }
         
-        .copy-btn { background: transparent; border: 1px solid var(--line); color: var(--accent); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; }
+        .copy-btn { background: transparent; border: 1px solid var(--line); color: var(--accent); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; transition: background 0.1s; touch-action: manipulation; }
+        .copy-btn:active { background: var(--accent-glow); transform: scale(0.95); }
 
-        .op-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-        .op-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--line); color: #fff; padding: 15px 0; border-radius: 15px; cursor: pointer; font-size: 11px; font-weight: bold; }
-        .op-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
-        .op-btn.hidden { display: none; }
+        /* HESAP MAKİNESİ (BÜYÜTÜLDÜ) */
+        .calc-display-area {
+            background: var(--input-bg); border: 2px solid var(--line); border-radius: 15px;
+            padding: 16px; margin-bottom: 15px; text-align: right; overflow: hidden; transition: background 0.3s, border-color 0.3s;
+        }
+        .calc-history { color: var(--muted); font-size: 15px; min-height: 20px; margin-bottom: 5px; }
+        .calc-current { color: var(--accent); font-size: 40px; font-weight: 800; word-break: break-all; line-height: 1; }
+        
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn { 
+            background: var(--btn-bg); border: 1px solid var(--line); color: var(--text); 
+            padding: 18px 0; border-radius: 15px; cursor: pointer; font-size: 24px; font-weight: bold; 
+            display: flex; align-items: center; justify-content: center; user-select: none;
+            touch-action: manipulation; /* Tıklama gecikmesini sıfırlar */
+            transition: transform 0.05s, background 0.05s; 
+        }
+        .calc-btn:active { transform: scale(0.92); background: var(--btn-active); }
+        .calc-btn.op { color: var(--accent); border-color: var(--line); }
+        .calc-btn.eq { background: var(--accent); color: #000; border: none; box-shadow: 0 0 10px var(--accent-glow); }
 
-        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
-        .color-dot { height: 40px; border-radius: 10px; cursor: pointer; border: 2px solid rgba(255,255,255,0.1); overflow: hidden; position: relative; }
+        .color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px; }
+        .color-dot { height: 40px; border-radius: 10px; cursor: pointer; border: 2px solid var(--line); overflow: hidden; position: relative; transition: transform 0.1s; touch-action: manipulation; }
+        .color-dot:active { transform: scale(0.85); }
         .split { position: absolute; inset: 0; display: flex; }
         .split span { flex: 1; height: 100%; }
 
         .setting-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); }
         .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #21262d; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--line); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(22px); }
 
         nav {
-            position: fixed !important; 
-            bottom: 15px !important; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: calc(100% - 30px); 
-            max-width: 400px;
-            background: rgba(13, 17, 23, 0.95); 
-            backdrop-filter: blur(10px);
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            padding: 8px; 
-            border-radius: 25px; 
-            border: 1px solid var(--line);
-            z-index: 9999; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: opacity 0.2s ease, visibility 0.2s;
+            position: fixed !important; bottom: 15px !important; left: 50%; transform: translateX(-50%); 
+            width: calc(100% - 30px); max-width: 400px;
+            background: var(--panel); backdrop-filter: blur(10px);
+            display: grid; grid-template-columns: repeat(2, 1fr); padding: 8px; 
+            border-radius: 25px; border: 1px solid var(--line); z-index: 9999; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: opacity 0.3s ease, visibility 0.3s;
         }
         
         .nav-hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none; }
-        .nav-item { background: transparent; border: none; color: var(--muted); font-weight: 800; padding: 12px; cursor: pointer; border-radius: 18px; font-size: 13px; }
-        .nav-item.active { background: rgba(255,255,255,0.05); color: var(--accent); }
-        .btn-clear { width: 100%; padding: 15px; background: transparent; border: 1px solid var(--line); color: var(--muted); border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 11px; }
+        .nav-item { background: transparent; border: none; color: var(--muted); font-weight: 800; padding: 12px; cursor: pointer; border-radius: 18px; font-size: 13px; transition: all 0.2s; touch-action: manipulation; }
+        .nav-item.active { background: var(--btn-active); color: var(--accent); }
+        
+        .btn-clear { width: 100%; padding: 15px; background: var(--btn-bg); border: 1px solid var(--line); color: var(--muted); border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 12px; transition: all 0.1s; touch-action: manipulation; }
+        .btn-clear:active { background: var(--btn-active); transform: scale(0.98); }
+        .btn-outline-accent { border-color: var(--accent); color: var(--accent); }
+
+        #dualColorsArea { display: none; margin-top: 15px; animation: fadeInDown 0.3s ease forwards; }
+        @keyframes fadeInDown { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -141,118 +164,289 @@
         </div>
     </header>
 
-    <div id="tab-yuzde" class="tab-content">
+    <div id="tab-yuzde" class="tab-content active">
         <div class="card">
             <span class="label">İhale Fiyatı</span>
             <input type="number" id="fiyatInp" inputmode="decimal" placeholder="0,000" oninput="hesapla()">
         </div>
         <div class="card" id="yuzdeListesi"></div>
-        <button class="btn-clear" onclick="resetYuzde()">SIFIRLA</button>
+        <button class="btn-clear" onclick="resetYuzde()">TÜMÜNÜ SIFIRLA</button>
     </div>
 
-    <div id="tab-islem" class="tab-content" style="display:none;">
-        <div class="op-grid">
-            <button class="op-btn active" id="btn-topla" onclick="setOp('TOPLAMA', this)">TOPLAMA</button>
-            <button class="op-btn" id="btn-cikar" onclick="setOp('ÇIKARMA', this)">ÇIKARMA</button>
-            <button class="op-btn" id="btn-carp" onclick="setOp('ÇARPMA', this)">ÇARPMA</button>
-            <button class="op-btn" id="btn-bol" onclick="setOp('BÖLME', this)">BÖLME</button>
-        </div>
-        <div class="card">
-            <span class="label">Değer 1</span>
-            <input type="number" id="s1" inputmode="decimal" placeholder="0" oninput="doMath()">
-            <div class="divider" style="height: 1px; background: var(--line); margin: 15px 0;"></div>
-            <span class="label">Değer 2</span>
-            <input type="number" id="s2" inputmode="decimal" placeholder="0" oninput="doMath()">
-        </div>
-        <div class="card">
-            <span class="label">Sonuç</span>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span id="mathResult" style="font-size:32px; font-weight:800; color:var(--accent);">0,000</span>
-                <button class="copy-btn" onclick="kopyala('mathResult')"><i class="fa-regular fa-copy"></i></button>
+    <div id="tab-islem" class="tab-content">
+        <div class="card" style="padding: 18px;">
+            <div class="calc-display-area">
+                <div class="calc-history" id="calcHistory"></div>
+                <div class="calc-current" id="calcDisplay">0</div>
+            </div>
+            <div class="calc-grid">
+                <button class="calc-btn op" onclick="calcCommand('C')">C</button>
+                
+                <button class="calc-btn op" 
+                        onmousedown="startDel()" 
+                        onmouseup="stopDel()" 
+                        onmouseleave="stopDel()" 
+                        ontouchstart="startDel(); event.preventDefault();" 
+                        ontouchend="stopDel()" 
+                        ontouchcancel="stopDel()">
+                    <i class="fa-solid fa-delete-left"></i>
+                </button>
+                
+                <button class="calc-btn op" onclick="calcCommand('%')">%</button>
+                <button class="calc-btn op" onclick="calcCommand('/')">÷</button>
+
+                <button class="calc-btn" onclick="calcInput('7')">7</button>
+                <button class="calc-btn" onclick="calcInput('8')">8</button>
+                <button class="calc-btn" onclick="calcInput('9')">9</button>
+                <button class="calc-btn op" onclick="calcCommand('*')">×</button>
+
+                <button class="calc-btn" onclick="calcInput('4')">4</button>
+                <button class="calc-btn" onclick="calcInput('5')">5</button>
+                <button class="calc-btn" onclick="calcInput('6')">6</button>
+                <button class="calc-btn op" onclick="calcCommand('-')">-</button>
+
+                <button class="calc-btn" onclick="calcInput('1')">1</button>
+                <button class="calc-btn" onclick="calcInput('2')">2</button>
+                <button class="calc-btn" onclick="calcInput('3')">3</button>
+                <button class="calc-btn op" onclick="calcCommand('+')">+</button>
+
+                <button class="calc-btn" onclick="calcInput('00')">00</button>
+                <button class="calc-btn" onclick="calcInput('0')">0</button>
+                <button class="calc-btn" onclick="calcInput('.')">,</button>
+                <button class="calc-btn eq" onclick="calcCommand('=')">=</button>
             </div>
         </div>
     </div>
 
-    <div id="tab-ayarlar" class="tab-content" style="display:none;">
+    <div id="tab-ayarlar" class="tab-content">
         <div class="card">
-            <span class="label">Standart Renkler</span>
-            <div class="color-grid">
-                <div class="color-dot" style="background:#00d2ff;" onclick="setTheme('blue')"></div>
-                <div class="color-dot" style="background:#ff3131;" onclick="setTheme('red')"></div>
-                <div class="color-dot" style="background:#008f39;" onclick="setTheme('green')"></div>
-                <div class="color-dot" style="background:#fff01f;" onclick="setTheme('yellow')"></div>
+            <span class="label">Solid Renk Paketi</span>
+            <div class="color-grid" id="solidColorGrid"></div>
+            
+            <button class="btn-clear btn-outline-accent" onclick="toggleDualColors()">
+                <i class="fa-solid fa-palette"></i> Çift Renkli Temaları Göster
+            </button>
+
+            <div id="dualColorsArea">
+                <span class="label" style="margin-top: 15px;">Koyu & Açık (Light) Temalar</span>
+                <div class="color-grid" id="dualColorGrid">
+                    <div class="color-dot" onclick="setFixedDualTheme('fb')"><div class="split"><span style="background:#FFD700"></span><span style="background:#001d3d"></span></div></div>
+                    <div class="color-dot" onclick="setFixedDualTheme('gs')"><div class="split"><span style="background:#ff0000"></span><span style="background:#FFD700"></span></div></div>
+                    <div class="color-dot" onclick="setFixedDualTheme('bjk')"><div class="split"><span style="background:#000000"></span><span style="background:#ffffff"></span></div></div>
+                    <div class="color-dot" onclick="setFixedDualTheme('ts')"><div class="split"><span style="background:#800000"></span><span style="background:#6ecff6"></span></div></div>
+                </div>
             </div>
-            <span class="label">Takım Renkleri</span>
-            <div class="color-grid">
-                <div class="color-dot" onclick="setTheme('fb')"><div class="split"><span style="background:#FFD700"></span><span style="background:#001d3d"></span></div></div>
-                <div class="color-dot" onclick="setTheme('gs')"><div class="split"><span style="background:#ff0000"></span><span style="background:#FFD700"></span></div></div>
-                <div class="color-dot" onclick="setTheme('bjk')"><div class="split"><span style="background:#000000"></span><span style="background:#ffffff"></span></div></div>
-                <div class="color-dot" onclick="setTheme('ts')"><div class="split"><span style="background:#800000"></span><span style="background:#6ecff6"></span></div></div>
-            </div>
-            <span class="label">İşlemleri Yönet</span>
-            <div class="setting-item"><span>Toplama</span><label class="switch"><input type="checkbox" checked id="sw-topla" onchange="toggleOp('topla', this.checked)"><span class="slider"></span></label></div>
-            <div class="setting-item"><span>Çıkarma</span><label class="switch"><input type="checkbox" checked id="sw-cikar" onchange="toggleOp('cikar', this.checked)"><span class="slider"></span></label></div>
-            <div class="setting-item"><span>Çarpma</span><label class="switch"><input type="checkbox" checked id="sw-carp" onchange="toggleOp('carp', this.checked)"><span class="slider"></span></label></div>
-            <div class="setting-item"><span>Bölme</span><label class="switch"><input type="checkbox" checked id="sw-bol" onchange="toggleOp('bol', this.checked)"><span class="slider"></span></label></div>
         </div>
         <div class="card">
             <span class="label">Görünür Oranlar</span>
             <div id="switchListesi"></div>
         </div>
-        <button class="btn-clear" onclick="closeSettings()">KAYDET VE ÇIK</button>
+        <button class="btn-clear" style="margin-bottom: 20px;" onclick="closeSettings()">KAYDET VE ÇIK</button>
     </div>
 </div>
 
 <nav id="bottom-nav">
     <button class="nav-item active" id="nav-yuzde" onclick="showTab('tab-yuzde', this)">Yüzdelik</button>
-    <button class="nav-item" id="nav-islem" onclick="showTab('tab-islem', this)">4 İşlem</button>
+    <button class="nav-item" id="nav-islem" onclick="showTab('tab-islem', this)">Hesap Makinesi</button>
 </nav>
 
 <textarea id="copyHelper" style="position:absolute; left:-999px;"></textarea>
 
 <script>
     const oranlar = [85, 84, 70, 69, 55, 54, 40, 39, 30, 20];
-    let currentOp = 'TOPLAMA';
+    
+    const solidColors = [
+        '#00d2ff', '#ff3131', '#008f39', '#fff01f', '#ff7f50', '#8a2be2', 
+        '#00ff7f', '#ff1493', '#00ced1', '#ffd700', '#ff4500', '#da70d6', 
+        '#adff2f', '#1e90ff', '#ff69b4', '#32cd32', '#8b4513', '#4682b4', 
+        '#d2691e', '#9932cc', '#2e8b57', '#b22222', '#20b2aa', '#db7093'
+    ];
+
+    const extraDualColors = [
+        ['#ff00ff', '#0a0a2a', false], ['#00f2fe', '#061325', false], ['#f12711', '#2a0a03', false], 
+        ['#00b09b', '#031c13', false], ['#f5af19', '#2c1e02', false], ['#43e97b', '#132115', false], 
+        ['#ff3131', '#f0f2f5', true], ['#00d2ff', '#eaf2f8', true], ['#008f39', '#e8f5e9', true], 
+        ['#8a2be2', '#f3e5f5', true], ['#ff8c00', '#fff8dc', true], ['#1e90ff', '#f0f8ff', true], 
+        ['#ff1493', '#ffe4e1', true], ['#c71585', '#fdf5e6', true], ['#2e8b57', '#f5fffa', true], 
+        ['#d2691e', '#fffaf0', true], ['#008080', '#e0f2f1', true], ['#e91e63', '#fce4ec', true],
+        ['#673ab7', '#ede7f6', true], ['#4caf50', '#e8f5e9', true]
+    ];
+
+    let calcCurrent = '0';
+    let calcPrev = '';
+    let calcOp = undefined;
+    let shouldResetScreen = false;
+    
+    // Silme (DEL) Butonu İçin Değişkenler
+    let delTimeout;
+    let delInterval;
 
     window.onload = () => {
-        const savedTheme = localStorage.getItem('apexTheme') || 'blue';
-        setTheme(savedTheme);
-
-        const yList = document.getElementById('yuzdeListesi');
-        const sList = document.getElementById('switchListesi');
-        
-        yList.innerHTML = '';
-        sList.innerHTML = '';
-
-        oranlar.forEach(o => {
-            const isVisible = localStorage.getItem('rate-'+o) !== 'false';
-            yList.innerHTML += `<div class="rate-row ${isVisible ? '' : 'hidden'}" id="row-${o}"><span>%${o}</span><span class="rate-val" id="r${o}">0,000</span><button class="copy-btn" onclick="kopyala('r${o}')"><i class="fa-regular fa-copy"></i></button></div>`;
-            sList.innerHTML += `<div class="setting-item"><span>%${o} Göster</span><label class="switch"><input type="checkbox" ${isVisible ? 'checked' : ''} onchange="toggleRate(${o}, this.checked)"><span class="slider"></span></label></div>`;
-        });
-
-        // Hızlıca yükleme ekranını kaldırıyoruz
-        setTimeout(() => document.body.classList.add('loaded'), 400);
+        initColors();
+        initRates();
+        loadSavedTheme();
+        setTimeout(() => document.body.classList.add('loaded'), 800);
     };
 
+    function initColors() {
+        const sGrid = document.getElementById('solidColorGrid');
+        solidColors.forEach(color => {
+            sGrid.innerHTML += `<div class="color-dot" style="background:${color};" onclick="setSolidTheme('${color}')"></div>`;
+        });
+
+        const dGrid = document.getElementById('dualColorGrid');
+        extraDualColors.forEach(pair => {
+            dGrid.innerHTML += `<div class="color-dot" onclick="setDynamicDualTheme('${pair[0]}', '${pair[1]}', ${pair[2]})"><div class="split"><span style="background:${pair[0]}"></span><span style="background:${pair[1]}"></span></div></div>`;
+        });
+    }
+
+    function initRates() {
+        const yList = document.getElementById('yuzdeListesi');
+        const sList = document.getElementById('switchListesi');
+        yList.innerHTML = ''; sList.innerHTML = '';
+        
+        oranlar.forEach(o => {
+            const isVisible = localStorage.getItem('rate-'+o) !== 'false';
+            
+            let icon = '';
+            let customStyle = '';
+            
+            // Altın: 85 ve 84
+            if (o === 84) {
+                icon = '<i class="fa-solid fa-trophy" style="color: #C0C0C0; margin-right: 8px;"></i>';
+                customStyle = 'color: #C0C0C0 !important;';
+            } 
+              // Altın: 85
+            if (o === 85) {
+                icon = '<i class="fa-solid fa-trophy" style="color: #FFD700; margin-right: 8px;"></i>';
+                customStyle = 'color: #FFD700 !important;';
+            } 
+            // Gümüş: 70
+            else if (o === 70) {
+                icon = '<i class="fa-solid fa-trophy" style="color: #C0C0C0; margin-right: 8px;"></i>';
+                customStyle = 'color: #C0C0C0 !important;';
+            } 
+            // Bronz: 55 ve 69
+            else if (o === 55 || o === 69) {
+                icon = '<i class="fa-solid fa-trophy" style="color: #CD7F32; margin-right: 8px;"></i>';
+                customStyle = 'color: #CD7F32 !important;';
+            }
+            // Kupa Yok (Çarpılı): 54, 40, 39, 30
+            else if (o === 54 || o === 40 || o === 39 || o === 30) {
+                icon = `<span class="fa-stack" style="margin-right: 8px; font-size: 0.7em;">
+                            <i class="fa-solid fa-trophy fa-stack-1x" style="color: #444;"></i>
+                            <i class="fa-solid fa-ban fa-stack-2x" style="color: #ff3131;"></i>
+                        </span>`;
+                customStyle = 'color: #8b949e !important;';
+            }
+
+            yList.innerHTML += `
+                <div class="rate-row ${isVisible ? '' : 'hidden'}" id="row-${o}">
+                    <span style="display:flex; align-items:center;">${icon} %${o}</span>
+                    <span class="rate-val" id="r${o}" style="${customStyle}">0,000</span>
+                    <button class="copy-btn" onclick="kopyala('r${o}')"><i class="fa-regular fa-copy"></i></button>
+                </div>`;
+            
+            sList.innerHTML += `
+                <div class="setting-item">
+                    <span>%${o} Göster</span>
+                    <label class="switch">
+                        <input type="checkbox" ${isVisible ? 'checked' : ''} onchange="toggleRate(${o}, this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>`;
+        });
+    }
+
+
+
+  // --- TEMA VE RENK YÖNETİMİ ---
+    function resetToDark() {
+        document.documentElement.style.setProperty('--text', '#ffffff');
+        document.documentElement.style.setProperty('--panel', '#0d1117');
+        document.documentElement.style.setProperty('--line', 'rgba(255,255,255,0.08)');
+        document.documentElement.style.setProperty('--muted', '#8b949e');
+        document.documentElement.style.setProperty('--input-bg', 'rgba(0,0,0,0.3)');
+        document.documentElement.style.setProperty('--btn-bg', 'rgba(255,255,255,0.03)');
+        document.documentElement.style.setProperty('--btn-active', 'rgba(255,255,255,0.1)');
+    }
+
+    function setLightMode() {
+        document.documentElement.style.setProperty('--text', '#111111');
+        document.documentElement.style.setProperty('--panel', '#ffffff');
+        document.documentElement.style.setProperty('--line', 'rgba(0,0,0,0.1)');
+        document.documentElement.style.setProperty('--muted', '#666666');
+        document.documentElement.style.setProperty('--input-bg', 'rgba(0,0,0,0.04)');
+        document.documentElement.style.setProperty('--btn-bg', 'rgba(0,0,0,0.03)');
+        document.documentElement.style.setProperty('--btn-active', 'rgba(0,0,0,0.08)');
+    }
+
+    function loadSavedTheme() {
+        const type = localStorage.getItem('apexThemeType') || 'solid';
+        const val = localStorage.getItem('apexThemeVal') || '#00d2ff';
+        
+        if (type === 'solid') setSolidTheme(val);
+        else if (type === 'fixed-dual') setFixedDualTheme(val);
+        else if (type === 'dynamic-dual') {
+            const parsed = JSON.parse(val);
+            setDynamicDualTheme(parsed[0], parsed[1], parsed[2]);
+        }
+    }
+
+        function setSolidTheme(hex) {
+        document.body.removeAttribute('data-theme');
+        resetToDark();
+        document.documentElement.style.setProperty('--accent', hex);
+        document.documentElement.style.setProperty('--accent-glow', hex + '44');
+        document.documentElement.style.setProperty('--bg', '#010409');
+        localStorage.setItem('apexThemeType', 'solid');
+        localStorage.setItem('apexThemeVal', hex);
+    }
+
+    function setFixedDualTheme(themeName) {
+        document.body.setAttribute('data-theme', themeName);
+        resetToDark();
+        localStorage.setItem('apexThemeType', 'fixed-dual');
+        localStorage.setItem('apexThemeVal', themeName);
+    }
+
+    function setDynamicDualTheme(accent, bg, isLight) {
+        document.body.removeAttribute('data-theme');
+        isLight ? setLightMode() : resetToDark();
+        
+        document.documentElement.style.setProperty('--accent', accent);
+        document.documentElement.style.setProperty('--accent-glow', accent + '55');
+        document.documentElement.style.setProperty('--bg', bg);
+        localStorage.setItem('apexThemeType', 'dynamic-dual');
+        localStorage.setItem('apexThemeVal', JSON.stringify([accent, bg, isLight]));
+    }
+
+    function toggleDualColors() {
+        const area = document.getElementById('dualColorsArea');
+        area.style.display = (area.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // --- SEKME GEÇİŞLERİ ---
     function showTab(id, btn) {
-        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById('settings-btn').classList.remove('active');
-        document.getElementById(id).style.display = 'block';
+        
+        const targetTab = document.getElementById(id);
+        void targetTab.offsetWidth; 
+        targetTab.classList.add('active');
+        
         if(btn) btn.classList.add('active');
     }
 
-    function showSettings() {
-        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('tab-ayarlar').style.display = 'block';
-        document.getElementById('settings-btn').classList.add('active');
-    }
-
+    function showSettings() { showTab('tab-ayarlar'); document.getElementById('settings-btn').classList.add('active'); }
     function closeSettings() { showTab('tab-yuzde', document.getElementById('nav-yuzde')); }
-    function setTheme(t) { document.body.setAttribute('data-theme', t); localStorage.setItem('apexTheme', t); }
-    function toggleRate(o, isVisible) { document.getElementById(`row-${o}`).classList.toggle('hidden', !isVisible); localStorage.setItem('rate-'+o, isVisible); }
-    function toggleOp(op, isVisible) { document.getElementById(`btn-${op}`).classList.toggle('hidden', !isVisible); localStorage.setItem('op-'+op, isVisible); }
+    
+    function toggleRate(o, isVisible) { 
+        document.getElementById(`row-${o}`).classList.toggle('hidden', !isVisible); 
+        localStorage.setItem('rate-'+o, isVisible); 
+    }
+    
     function format(n) { return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(n.toFixed(3))); }
 
     function hesapla() {
@@ -260,23 +454,7 @@
         oranlar.forEach(o => { document.getElementById('r'+o).innerText = format((val * o) / 100); });
     }
 
-    function setOp(op, btn) {
-        currentOp = op;
-        document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        doMath();
-    }
-
-    function doMath() {
-        const v1 = parseFloat(document.getElementById('s1').value) || 0;
-        const v2 = parseFloat(document.getElementById('s2').value) || 0;
-        let res = 0;
-        if(currentOp === 'TOPLAMA') res = v1 + v2;
-        else if(currentOp === 'ÇIKARMA') res = v1 - v2;
-        else if(currentOp === 'ÇARPMA') res = v1 * v2;
-        else if(currentOp === 'BÖLME') res = v2 !== 0 ? v1 / v2 : 0;
-        document.getElementById('mathResult').innerText = format(res);
-    }
+    function resetYuzde() { document.getElementById('fiyatInp').value = ''; hesapla(); }
 
     function kopyala(id) {
         const helper = document.getElementById("copyHelper");
@@ -285,7 +463,90 @@
         document.execCommand("copy");
     }
 
-    function resetYuzde() { document.getElementById('fiyatInp').value = ''; hesapla(); }
+    // --- HESAP MAKİNESİ MANTIĞI ---
+    const calcDisplay = document.getElementById('calcDisplay');
+    const calcHistory = document.getElementById('calcHistory');
+
+    function updateCalcScreen() {
+        calcDisplay.innerText = calcCurrent.replace('.', ',');
+        if (calcOp != null) {
+            calcHistory.innerText = `${calcPrev.replace('.', ',')} ${calcOp.replace('*', '×').replace('/', '÷')}`;
+        } else {
+            calcHistory.innerText = '';
+        }
+    }
+
+    function calcInput(number) {
+        if (calcCurrent === '0' && number !== '.') { calcCurrent = number; }
+        else if (shouldResetScreen) { calcCurrent = number; shouldResetScreen = false; }
+        else {
+            if (number === '.' && calcCurrent.includes('.')) return;
+            calcCurrent += number.toString();
+        }
+        updateCalcScreen();
+    }
+
+    function calcCommand(cmd) {
+        if (cmd === 'C') {
+            calcCurrent = '0'; calcPrev = ''; calcOp = undefined;
+        } 
+        else if (cmd === 'DEL') {
+            if(shouldResetScreen) return;
+            calcCurrent = calcCurrent.toString().slice(0, -1);
+            if (calcCurrent === '' || calcCurrent === '-') calcCurrent = '0';
+        }
+        else if (cmd === '%') {
+            calcCurrent = (parseFloat(calcCurrent) / 100).toString();
+        }
+        else if (['+', '-', '*', '/'].includes(cmd)) {
+            if (calcCurrent === '') return;
+            if (calcPrev !== '' && !shouldResetScreen) computeCalc();
+            calcOp = cmd;
+            calcPrev = calcCurrent;
+            shouldResetScreen = true;
+        }
+        else if (cmd === '=') {
+            if (calcOp == null || shouldResetScreen) return;
+            computeCalc();
+            calcOp = undefined;
+            calcPrev = '';
+        }
+        updateCalcScreen();
+    }
+
+    function computeCalc() {
+        let computation;
+        const prev = parseFloat(calcPrev);
+        const current = parseFloat(calcCurrent);
+        if (isNaN(prev) || isNaN(current)) return;
+        
+        switch (calcOp) {
+            case '+': computation = prev + current; break;
+            case '-': computation = prev - current; break;
+            case '*': computation = prev * current; break;
+            case '/': computation = current === 0 ? 0 : prev / current; break;
+            default: return;
+        }
+        
+        calcCurrent = Math.round(computation * 10000000) / 10000000; 
+        calcCurrent = calcCurrent.toString();
+        shouldResetScreen = true;
+    }
+
+    // Basılı Tutarak Silme Fonksiyonları
+    function startDel() {
+        calcCommand('DEL'); // İlk basışta hemen bir tane silsin
+        delTimeout = setTimeout(() => {
+            delInterval = setInterval(() => {
+                calcCommand('DEL');
+            }, 80); // Basılı tuttukça silme hızı (ms)
+        }, 350); // Ne kadar basılı tutarsan sürekli silmeye başlasın (ms)
+    }
+
+    function stopDel() {
+        clearTimeout(delTimeout);
+        clearInterval(delInterval);
+    }
 
     const initialHeight = window.innerHeight;
     const bottomNav = document.getElementById('bottom-nav');
