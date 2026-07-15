@@ -868,6 +868,54 @@ function showMainApp() {
             bottomNav.classList.remove('nav-hidden'); 
         }
     });
+    // ========== GİRİŞ EKRANI BAŞLATMA ==========
+const welcomeScreen2 = document.getElementById('welcome-screen');
+const usernameInput2 = document.getElementById('username-input');
+const startButton2 = document.getElementById('start-button');
+const welcomeError2 = document.getElementById('welcome-error');
+const gameContainer2 = document.getElementById('game-container');
+
+const bannedNames = [
+    'murat12wq', 'htatli46', 'afacan', 'yahogames36', 'plus',
+    'seyirdefteri', 'serhates', 'timsah_vadii', 'bababa', 'ahmet50',
+    'boss', 'alihanbl', 'aren23', 'ramoss', 'aykac_group',
+    'tekmeno', 'selim22', 'mehmet_adak'
+];
+
+usernameInput2.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') startGame2();
+});
+
+startButton2.addEventListener('click', startGame2);
+
+function startGame2() {
+    const username = usernameInput2.value.trim();
+
+    if (bannedNames.includes(username.toLowerCase())) {
+        welcomeError2.textContent = 'Bu kullanıcı adı yasaklı!';
+        welcomeError2.style.display = 'block';
+        return;
+    }
+
+    if (username === '') {
+        welcomeError2.textContent = 'Lütfen bir kullanıcı adı gir!';
+        welcomeError2.style.display = 'block';
+        return;
+    }
+
+    localStorage.setItem('apex_username', username);
+    window.playerName = username;
+
+    welcomeScreen2.classList.add('fade-out');
+    setTimeout(() => {
+        welcomeScreen2.style.display = 'none';
+        gameContainer2.style.display = 'block';
+    }, 500);
+}
+
+window.addEventListener('load', () => {
+    usernameInput2.focus();
+});
 </script>
 </body>
 </html>
