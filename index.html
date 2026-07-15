@@ -7,6 +7,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
+        #banScreen {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+}
+
+.floating-ban {
+    position: absolute;
+    color: #ff0000;
+    font-weight: bold;
+    font-size: 30px;
+    opacity: 0.3;
+    animation: floatBan 8s linear infinite;
+}
+
+@keyframes floatBan {
+    0% { transform: translateY(100vh) rotate(0deg); }
+    100% { transform: translateY(-100px) rotate(360deg); }
+}
+
+.ban-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff0000;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 10;
+    background: rgba(0,0,0,0.8);
+    padding: 20px;
+    border-radius: 10px;
+}
         :root {
             --bg: #010409;
             --panel: #0d1117;
@@ -135,6 +174,22 @@
 </head>
 <body>
 
+<div id="banScreen">
+    <!-- Yüzen yazılar -->
+    <div class="floating-ban" style="left: 10%; animation-delay: 0s;">BAN</div>
+    <div class="floating-ban" style="left: 30%; animation-delay: 2s; font-size: 25px;">YASAKLI</div>
+    <div class="floating-ban" style="left: 50%; animation-delay: 4s;">GİRİŞ YOK</div>
+    <div class="floating-ban" style="left: 70%; animation-delay: 1s; font-size: 35px;">BANNED</div>
+    <div class="floating-ban" style="left: 90%; animation-delay: 3s;">ENGEL</div>
+    <div class="floating-ban" style="left: 20%; animation-delay: 5s; font-size: 28px;">UZAKLAŞTIRILDI</div>
+    <div class="floating-ban" style="left: 60%; animation-delay: 6s;">BAN</div>
+    <div class="floating-ban" style="left: 80%; animation-delay: 3.5s; font-size: 32px;">YASAK</div>
+    
+    <!-- Ana mesaj -->
+    <div class="ban-message">
+        WqAzer tarafından ötede ağlanmaya gönderildiniz
+    </div>
+</div>
 <div id="loader">
     <div class="pinnacle-logo" style="width: 80px; height: 80px;">
         <svg class="pinnacle-svg" viewBox="0 0 100 100">
@@ -253,6 +308,60 @@
 <textarea id="copyHelper" style="position:absolute; left:-999px;"></textarea>
 
 <script>
+    // Banlı kullanıcı listesi (senin isimlerin)
+const bannedUsers = [
+    'murat12wq',
+    'htatli46', 
+    'afacan',
+    'yahogames36',
+    'plus',
+    'seyirdefteri',
+    'serhates',
+    'timsah_vadii',
+    'bababa',
+    'ahmet50',
+    'boss',
+    'alihanbl',
+    'aren23',
+    'ramoss',
+    'aykac_group',
+    'tekmeno',
+    'selim22',
+    'mehmet_adak'
+];
+
+// Giriş fonksiyonu
+function login() {
+    const username = document.getElementById('username').value.toLowerCase();
+    
+    // Ban kontrolü
+    if (bannedUsers.includes(username)) {
+        showBanScreen();
+        return;
+    }
+    
+    // Başarılı giriş - tek seferlik kaydet
+    localStorage.setItem('loggedInUser', username);
+    showMainApp();
+}
+
+// Sayfa yüklendiğinde kontrol
+window.onload = function() {
+    const savedUser = localStorage.getItem('loggedInUser');
+    if (savedUser) {
+        showMainApp();
+    }
+};
+
+function showBanScreen() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('banScreen').style.display = 'block';
+}
+
+function showMainApp() {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    }
     const oranlar = [85, 84, 70, 69, 55, 54, 40, 39, 30, 20];
     
     const solidColors = [
