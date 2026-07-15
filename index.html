@@ -7,136 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* Giriş Ekranı Overlay */
-.welcome-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  transition: opacity 0.5s ease;
-}
-
-.welcome-overlay.fade-out {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* Giriş Kutusu */
-.welcome-box {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 50px 40px;
-  text-align: center;
-  max-width: 420px;
-  width: 90%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  animation: welcomeFloat 3s ease-in-out infinite;
-}
-
-@keyframes welcomeFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-/* Başlık */
-.welcome-title {
-  font-size: 48px;
-  font-weight: 900;
-  color: #fff;
-  margin-bottom: 10px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
-  background-size: 400% 400%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientShift 4s ease infinite;
-}
-
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-.welcome-subtitle {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 16px;
-  margin-bottom: 30px;
-}
-
-/* Input */
-.welcome-input-group {
-  margin-bottom: 20px;
-}
-
-.welcome-input {
-  width: 100%;
-  padding: 14px 18px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  color: #fff;
-  font-size: 16px;
-  outline: none;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-}
-
-.welcome-input:focus {
-  border-color: #ff6b6b;
-  box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.welcome-input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-/* Buton */
-.welcome-button {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(45deg, #ff6b6b, #ff8e53);
-  border: none;
-  border-radius: 12px;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  letter-spacing: 1px;
-}
-
-.welcome-button:hover {
-  transform: scale(1.03);
-  box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
-}
-
-.welcome-button:active {
-  transform: scale(0.97);
-}
-
-/* Hata Mesajı */
-.welcome-error {
-  color: #ff6b6b;
-  font-size: 14px;
-  margin-top: 12px;
-  animation: shake 0.5s ease;
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-8px); }
-  75% { transform: translateX(8px); }
-}
         #banScreen {
     display: none;
     position: fixed;
@@ -304,23 +174,6 @@
 </head>
 <body>
 
-<!-- Giriş Ekranı -->
-<div id="welcome-screen" class="welcome-overlay">
-  <div class="welcome-box">
-    <h1 class="welcome-title">ApeX</h1>
-    <p class="welcome-subtitle">Oyuna Hoş Geldin</p>
-    <div class="welcome-input-group">
-      <input type="text" id="username-input" class="welcome-input" placeholder="Kullanıcı adını gir..." maxlength="20">
-    </div>
-    <button id="start-button" class="welcome-button">Oyuna Başla</button>
-    <p id="welcome-error" class="welcome-error" style="display: none;">Lütfen bir kullanıcı adı gir!</p>
-  </div>
-</div>
-
-<!-- Ana oyun içeriğin burada olacak -->
-<div id="game-container" style="display: none;">
-  <!-- Mevcut oyun içeriğin -->
-</div>
 <div id="banScreen">
     <!-- Yüzen yazılar -->
     <div class="floating-ban" style="left: 10%; animation-delay: 0s;">BAN</div>
@@ -455,61 +308,6 @@
 <textarea id="copyHelper" style="position:absolute; left:-999px;"></textarea>
 
 <script>
-    // Giriş ekranı işlemleri
-const welcomeScreen = document.getElementById('welcome-screen');
-const usernameInput = document.getElementById('username-input');
-const startButton = document.getElementById('start-button');
-const welcomeError = document.getElementById('welcome-error');
-const gameContainer = document.getElementById('game-container');
-
-// Enter tuşuyla da giriş yapabilme
-usernameInput.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    startGame();
-  }
-});
-
-// Butona tıklandığında
-startButton.addEventListener('click', startGame);
-
-function startGame() {
-  const username = usernameInput.value.trim();
-  
-  if (username === '') {
-    // Hata göster
-    welcomeError.style.display = 'block';
-    usernameInput.style.borderColor = '#ff6b6b';
-    
-    // Input'u salla
-    usernameInput.style.animation = 'shake 0.5s ease';
-    setTimeout(() => {
-      usernameInput.style.animation = '';
-      usernameInput.style.borderColor = '';
-    }, 500);
-    
-    return;
-  }
-  
-  // Kullanıcı adını kaydet (localStorage veya global değişken)
-  localStorage.setItem('apex_username', username);
-  window.playerName = username;
-  
-  // Giriş ekranını kaldır, oyunu göster
-  welcomeScreen.classList.add('fade-out');
-  
-  setTimeout(() => {
-    welcomeScreen.style.display = 'none';
-    gameContainer.style.display = 'block';
-    
-    // Oyunu başlatma fonksiyonunu çağır (varsa)
-    // initGame(); veya startGameLoop();
-  }, 500);
-}
-
-// Sayfa yüklendiğinde input'a odaklan
-window.addEventListener('load', () => {
-  usernameInput.focus();
-});
     // Banlı kullanıcı listesi (senin isimlerin)
 const bannedUsers = [
     'murat12wq',
@@ -868,54 +666,6 @@ function showMainApp() {
             bottomNav.classList.remove('nav-hidden'); 
         }
     });
-    // ========== GİRİŞ EKRANI BAŞLATMA ==========
-const welcomeScreen2 = document.getElementById('welcome-screen');
-const usernameInput2 = document.getElementById('username-input');
-const startButton2 = document.getElementById('start-button');
-const welcomeError2 = document.getElementById('welcome-error');
-const gameContainer2 = document.getElementById('game-container');
-
-const bannedNames = [
-    'murat12wq', 'htatli46', 'afacan', 'yahogames36', 'plus',
-    'seyirdefteri', 'serhates', 'timsah_vadii', 'bababa', 'ahmet50',
-    'boss', 'alihanbl', 'aren23', 'ramoss', 'aykac_group',
-    'tekmeno', 'selim22', 'mehmet_adak'
-];
-
-usernameInput2.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') startGame2();
-});
-
-startButton2.addEventListener('click', startGame2);
-
-function startGame2() {
-    const username = usernameInput2.value.trim();
-
-    if (bannedNames.includes(username.toLowerCase())) {
-        welcomeError2.textContent = 'Bu kullanıcı adı yasaklı!';
-        welcomeError2.style.display = 'block';
-        return;
-    }
-
-    if (username === '') {
-        welcomeError2.textContent = 'Lütfen bir kullanıcı adı gir!';
-        welcomeError2.style.display = 'block';
-        return;
-    }
-
-    localStorage.setItem('apex_username', username);
-    window.playerName = username;
-
-    welcomeScreen2.classList.add('fade-out');
-    setTimeout(() => {
-        welcomeScreen2.style.display = 'none';
-        gameContainer2.style.display = 'block';
-    }, 500);
-}
-
-window.addEventListener('load', () => {
-    usernameInput2.focus();
-});
 </script>
 </body>
 </html>
