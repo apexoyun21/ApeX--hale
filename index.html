@@ -173,6 +173,13 @@
     </style>
 </head>
 <body>
+<div id="loginScreen" style="position:fixed; inset:0; z-index:10000; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
+    <div class="pinnacle-logo" style="width:80px; height:80px; margin-bottom:20px;">
+        <svg class="pinnacle-svg" viewBox="0 0 100 100"><path d="M50 15 L85 85 L50 70 L15 85 Z M50 15 L50 70" /></svg>
+    </div>
+    <input type="password" id="passInp" placeholder="Şifre Gir" style="max-width:300px; text-align:center; font-size:20px;">
+    <button class="btn-clear" onclick="checkPassword()" style="margin-top:20px; width:300px; background:var(--accent); color:#000;">GİRİŞ YAP</button>
+</div>
 
 <div id="banScreen">
     <!-- Yüzen yazılar -->
@@ -308,27 +315,30 @@
 <textarea id="copyHelper" style="position:absolute; left:-999px;"></textarea>
 
 <script>
-    // Banlı kullanıcı listesi (senin isimlerin)
-const bannedUsers = [
-    'murat12wq',
-    'htatli46', 
-    'afacan',
-    'yahogames36',
-    'plus',
-    'seyirdefteri',
-    'serhates',
-    'timsah_vadii',
-    'bababa',
-    'ahmet50',
-    'boss',
-    'alihanbl',
-    'aren23',
-    'ramoss',
-    'aykac_group',
-    'tekmeno',
-    'selim22',
-    'mehmet_adak'
-];
+  const PASSWORD = "ApeX2429"; // Şifren burada
+const TWELVE_HOURS = 12 * 60 * 60 * 1000;
+
+function checkPassword() {
+    const input = document.getElementById('passInp').value;
+    if (input === PASSWORD) {
+        localStorage.setItem('loginTime', Date.now());
+        document.getElementById('loginScreen').style.display = 'none';
+    } else {
+        alert("Yanlış Şifre!");
+    }
+}
+
+// Sayfa yüklendiğinde kontrol et
+(function authCheck() {
+    const lastLogin = localStorage.getItem('loginTime');
+    const now = Date.now();
+    
+    if (lastLogin && (now - lastLogin < TWELVE_HOURS)) {
+        document.getElementById('loginScreen').style.display = 'none';
+    } else {
+        document.getElementById('loginScreen').style.display = 'flex';
+    }
+})();
 
 // Giriş fonksiyonu
 function login() {
